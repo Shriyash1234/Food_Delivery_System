@@ -1,0 +1,120 @@
+/* General styles */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f7f6;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 50px auto;
+  text-align: center;
+}
+
+h1 {
+  color: #333;
+}
+
+/* Homepage styles */
+.buttons a {
+  display: inline-block;
+  padding: 15px 30px;
+  margin: 10px;
+  font-size: 20px;
+  text-decoration: none;
+  color: #fff;
+  background: linear-gradient(to right, #007bff, #0062cc);
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.3s;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.buttons a:hover {
+  background: linear-gradient(to right, #0062cc, #0056b3);
+}
+
+/* Login page styles */
+form {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+}
+
+input,
+select,
+button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin: 15px 0;
+  font-size: 16px;
+  border: none;
+  border-radius: 30px;
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus,
+button:focus {
+  outline: none;
+}
+
+button {
+  color: #fff;
+  background: linear-gradient(to right, #007bff, #0062cc);
+  cursor: pointer;
+  transition: background 0.3s;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+  background: linear-gradient(to right, #0062cc, #0056b3);
+}
+
+/* Signup page styles */
+.cards {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 60px;
+}
+
+.card {
+  flex: 1;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  color: #333;
+  font-size: 24px;
+}
+
+.card a {
+  display: inline-block;
+  padding: 15px 30px;
+  margin-top: 30px;
+  font-size: 20px;
+  text-decoration: none;
+  color: #fff;
+  background: linear-gradient(to right, #007bff, #0062cc);
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.3s;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card a:hover {
+  background: linear-gradient(to right, #0062cc, #0056b3);
+}

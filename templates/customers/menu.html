@@ -1,0 +1,23 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+</head>
+<body>
+    {% for item in restaurant_name %}
+    <h1>{{item.restaurant_name}}</h1>
+    {% endfor %}
+    {% for food in food_items%}
+        <img src="{{food.item_image}}">
+        <p>{{food.item_name}}</p>
+        <p>{{food.item_price}}</p>
+        <p>{{food.item_rating}}</p>
+        <p>{{food.item_type}}</p>
+        <p>{{food.order_count}}</p>
+        <p>{{food.availability}}</p>
+        <p>{{food.vegetarian}}</p>
+    {% endfor %}
+</body>
+
+</html>

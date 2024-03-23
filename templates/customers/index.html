@@ -1,0 +1,22 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers</title>
+    <link rel="stylesheet" href="./static/CSS/header.css">
+    <link rel="stylesheet" href="../../static/CSS/customer.css">
+</head>
+<body>
+    <h1>List of Restaurant Cuisine Types</h1>
+    <ul class="all_cuisines">
+        {% for cuisine in cuisines %}
+        <div class="cuisine_type">
+            <a href="{{ url_for('restaurants_by_cuisine', cuisine_type=cuisine.cuisine_type) }}">
+                <img src="{{ url_for('static', filename='Assets/cuisines/' + cuisine.cuisine_type + '.jpg') }}" class="cuisine_type_image" alt="cuisine_img">
+                <p>{{ cuisine.cuisine_type }}</p>
+            </a>
+        </div>   
+        {% endfor %}
+    </ul>
+</body>
+</html>

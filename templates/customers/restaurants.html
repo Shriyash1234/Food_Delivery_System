@@ -1,0 +1,22 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant</title>
+    <link rel="stylesheet" href="../../static/CSS/customer.css">
+</head>
+<body>
+   
+    {% for restaurant in restaurants %}
+        <a href="{{ url_for('restaurant_menu', restaurant_id=restaurant.restaurant_id, cuisine_type=restaurant.cuisine_type ) }}">
+            <div class="restaurant_div">
+                <p>{{restaurant.restaurant_name}}</p>
+                <p>{{restaurant.cuisine_type}}</p>
+                <p>{{restaurant.timings}}</p>
+                <p>{{restaurant.rating}}</p>
+                <p>Address</p>
+            </div>   
+        </a>
+        {% endfor %}
+</body>
+</html>

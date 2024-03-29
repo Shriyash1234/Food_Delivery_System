@@ -8,7 +8,7 @@ from flask_mysqldb import MySQL
 app = Flask(__name__,static_url_path="/static")
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Kasvam@123'
+app.config['MYSQL_PASSWORD'] = '*****'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 # try:
@@ -250,15 +250,16 @@ def restaurant_menu(restaurant_id, cuisine_type):
 
     return render_template("/customers/menu.html",food_items=food_items,restaurant_name=restaurant_name)
 
-@app.route('/userdetails/<customer_id>')
-# should contial some details of the user like account details, address and orders made by the user
-def userdetails(customer_id):
+@app.route('/userdetails')
+# should contain some details of the user like account details, address, and orders made by the user
+def userdetails():
+    customer_id = session.get('customer_id')
     cur = mysql.connection.cursor()
     cur.execute('''
     SELECT *
     FROM Customers
     WHERE customer_id = %s
-    ''', (customer_id))
+    ''', (customer_id,))
     user_data = cur.fetchall()
     user_columns = [col[0] for col in cur.description]
     user = [dict(zip(user_columns, row)) for row in user_data]
@@ -267,7 +268,7 @@ def userdetails(customer_id):
     SELECT *
     FROM customer_address
     WHERE customer_id = %s
-    ''', (customer_id))
+    ''', (customer_id,))
     address_data = cur.fetchall()
     address_columns = [col[0] for col in cur.description]
     address = [dict(zip(address_columns, row)) for row in address_data]
@@ -283,12 +284,12 @@ def userdetails(customer_id):
 
     order_ids = [order['order_id'] for order in orders]
 
-    # once youhave order_id we see the relation Ordered_items (order_id, item_id, item_quantity, item_rating, item_review, notes)
-    # this relation is many to many relation between orders and food_items
+    # once you have order_id we see the relation Ordered_items (order_id, item_id, item_quantity, item_rating, item_review, notes)
+    # this relation is many to many relations between orders and food_items
     # so for one order_id we can have multiple food_items
     # by order_id we get item_id and then we can get the food_item details from food_item table
 
-    food_items = [] # list of dictionaries which contain order_id and food_items corresponding to that order_id
+    food_items = []  # list of dictionaries which contain order_id and food_items corresponding to that order_id
     for order_id in order_ids:
         cur.execute('''
         SELECT *

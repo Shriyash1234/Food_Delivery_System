@@ -44,11 +44,23 @@
     .header-text {
       font-size: 1.5rem;  /* Adjust font size */
     }
+    /* Added style for user profile button */
+    .user-profile-button {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background-color: #4f46e5;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <header class="flex justify-center items-center">
     <h1 class="header-text text-blue  font-bold">Foodie's Delight</h1>
+    <a href="{{ url_for('userdetails') }}" class="user-profile-button">User Profile</a>
   </header>
   <h2 class="text-3xl font-bold text-center my-4">Explore Cuisines From Around India </h2>
   <ul class="grid grid-cols-1 md:grid-cols-3 gap-4 px-4">

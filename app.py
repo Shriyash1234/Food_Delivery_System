@@ -1,3 +1,5 @@
+from datetime import datetime
+import json
 import time
 import MySQLdb
 from flask import Flask,jsonify,render_template,request,redirect,url_for,session
@@ -118,7 +120,11 @@ def signupcustomer():
                 cur.execute("INSERT INTO Address (address_id, building_name, street, pin_code, city, state) VALUES (%s,%s,%s,%s,%s,%s)",(address_ID,building_name,street_name,pin_code,city,state))
             else:
                 address_ID = address_ID[0]
-            cur.execute("INSERT INTO customers(customer_id, first_name, middle_name, last_name, dob, age, contact_details, password) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,firstname,middle_name,lastname,DOB,26,{email,phone_number},password))
+             # Calculate age from DOB
+            dob = datetime.strptime(DOB, '%Y-%m-%d')
+            age = (datetime.now() - dob).days // 365
+
+            cur.execute("INSERT INTO customers(customer_id, first_name, middle_name, last_name, dob, age, contact_details, password) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,firstname,middle_name,lastname,DOB,age,json.dumps({'email': email, 'phone_number': phone_number}),password))
             cur.execute("INSERT INTO Customer_Address (customer_id, address_id) VALUES (%s,%s)",(ID,address_ID))
             mysql.connection.commit()
         except:

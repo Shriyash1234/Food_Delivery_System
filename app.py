@@ -9,7 +9,7 @@ app = Flask(__name__,static_url_path="/static")
 app.secret_key = 'Top_secret'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'sriroot'
+app.config['MYSQL_PASSWORD'] = '*********'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 # try:
@@ -36,23 +36,23 @@ def login():
                 msg = "Single Quote (') is not allowed in username field."
                 flask.flash(msg)
                 return redirect(url_for('login'))
-            cursor.execute("SELECT * FROM Customers WHERE email = % s AND password = % s", (useremail, password,))
+            cursor.execute("SELECT * FROM Customers WHERE contact_details->>'$.email' = %s AND password = %s", (useremail, password,))
             account = cursor.fetchone()
             if account:
                 session['customerbool'] = True
                 session['restbool'], session['agentbool'] = False, False
-                session['customer_ID'] = str(account['customer_ID'])
-                cursor.execute("select address_ID from customer_address where customer_ID=%s", (session['customer_ID'],))
+                session['customer_id'] = str(account['customer_id'])
+                cursor.execute("select address_ID from customer_address where customer_id=%s", (session['customer_id'],))
                 addr_ID = cursor.fetchall()
                 session['addr_ID'] = addr_ID[0]
                 msg = 'Logged in successfully !'
                 flask.flash(msg)
-                return redirect(url_for('customer.dashboard'))
+                return redirect(url_for('index'))
             else:
                 time.sleep(2)
                 msg = 'Incorrect username / password !'
         elif (authority == "Delivery Agent"):
-            cursor.execute("SELECT * FROM delivery_agent WHERE email = % s AND password = % s", (useremail, password, ))
+            cursor.execute("SELECT * FROM delivery_agent WHERE email = %s AND password = %s", (useremail, password, ))
             account = cursor.fetchone()
             if account:
                 session['agentbool'] = True
@@ -65,7 +65,7 @@ def login():
                 time.sleep(2)
                 msg = 'Incorrect username / password !'
         elif (authority == "Restaurant"):
-            cursor.execute("SELECT * FROM Restaurant WHERE email = % s AND password = % s", (useremail, password, ))
+            cursor.execute("SELECT * FROM Restaurant WHERE contact_details->>'$.email' = %s AND password = %s", (useremail, password, ))
             # cursor.execute(f"SELECT * FROM restaurant WHERE email='{useremail}' AND password='{password}'")
             account = cursor.fetchone()
             if account:
@@ -105,7 +105,7 @@ def signupcustomer():
         state = userdetails['statename']
         pin_code = userdetails['pincode']
         cur = mysql.connection.cursor()
-        cur.execute("select max(customer_ID) from customers")
+        cur.execute("select max(customer_id) from customers")
         ID = cur.fetchone()
         ID = str(int(ID[0]) + 1)
         cur.execute("SELECT * FROM Address WHERE building_name=%s and street=%s and city=%s and state=%s and pin_code=%s",(building_name,street_name,city,state,pin_code))
@@ -118,7 +118,7 @@ def signupcustomer():
                 cur.execute("INSERT INTO Address (address_id, building_name, street, pin_code, city, state) VALUES (%s,%s,%s,%s,%s,%s)",(address_ID,building_name,street_name,pin_code,city,state))
             else:
                 address_ID = address_ID[0]
-            cur.execute("INSERT INTO customers(customer_id, first_name, middle_name, last_name, dob, age, contact_details, password) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,firstname,middle_name,lastname,DOB,phone_number,email,password))
+            cur.execute("INSERT INTO customers(customer_id, first_name, middle_name, last_name, dob, age, contact_details, password) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,firstname,middle_name,lastname,DOB,26,{email,phone_number},password))
             cur.execute("INSERT INTO Customer_Address (customer_id, address_id) VALUES (%s,%s)",(ID,address_ID))
             mysql.connection.commit()
         except:

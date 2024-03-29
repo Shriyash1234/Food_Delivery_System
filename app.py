@@ -256,7 +256,7 @@ def userdetails(customer_id):
     cur = mysql.connection.cursor()
     cur.execute('''
     SELECT *
-    FROM customers
+    FROM Customers
     WHERE customer_id = %s
     ''', (customer_id))
     user_data = cur.fetchall()
@@ -274,14 +274,43 @@ def userdetails(customer_id):
 
     cur.execute('''
     SELECT *
-    FROM orders
+    FROM Orders
     WHERE customer_id = %s
-    ''', (customer_id))
+    ''', (customer_id,))
     order_data = cur.fetchall()
     order_columns = [col[0] for col in cur.description]
     orders = [dict(zip(order_columns, row)) for row in order_data]
 
-    return render_template("/customers/userdetails.html", user=user, address=address, orders=orders)
+    order_ids = [order['order_id'] for order in orders]
+
+    # once youhave order_id we see the relation Ordered_items (order_id, item_id, item_quantity, item_rating, item_review, notes)
+    # this relation is many to many relation between orders and food_items
+    # so for one order_id we can have multiple food_items
+    # by order_id we get item_id and then we can get the food_item details from food_item table
+
+    food_items = [] # list of dictionaries which contain order_id and food_items corresponding to that order_id
+    for order_id in order_ids:
+        cur.execute('''
+        SELECT *
+        FROM Ordered_items
+        WHERE order_id = %s
+        ''', (order_id,))
+        ordered_items_data = cur.fetchall()
+        ordered_items_columns = [col[0] for col in cur.description]
+        ordered_items = [dict(zip(ordered_items_columns, row)) for row in ordered_items_data]
+
+        for item in ordered_items:
+            cur.execute('''
+            SELECT *
+            FROM food_item
+            WHERE item_id = %s
+            ''', (item['item_id'],))
+            food_item_data = cur.fetchall()
+            food_item_columns = [col[0] for col in cur.description]
+            food_item = [dict(zip(food_item_columns, row)) for row in food_item_data]
+            food_items.append({'order_id': order_id, 'food_item': food_item[0]})
+
+    return render_template("/customers/userdetails.html", user=user, address=address, orders=orders, food_items=food_items)
 
 
 if __name__ == '__main__':

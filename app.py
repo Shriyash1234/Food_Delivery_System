@@ -83,6 +83,9 @@ def login():
         flask.flash(msg)
     return render_template('login.html', msg = msg)
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    return render_template('signup.html')
 
 @app.route('/signupcustomer',methods=['GET', 'POST'])
 def signupcustomer():
@@ -124,7 +127,7 @@ def signupcustomer():
         mysql.connection.commit()
         flask.flash('Customer successfully registered')
         return redirect(url_for('login.html'))
-    return render_template("/customers/signup.html")
+    return render_template("/customers/signup_user.html")
 
 
 @app.route('/signuprestaurants',methods=['GET', 'POST'])
@@ -166,7 +169,7 @@ def signuprestaurants():
         mysql.connection.commit()
         flask.flash('Restaurant successfully registered')
         return redirect(url_for('login.html'))
-    return render_template("/restaurants/signup.html")
+    return render_template("/restaurants/signup_restaurant.html")
 
 # as a delivery person
 @app.route('/signupdelivery',methods=['GET', 'POST'])
@@ -190,12 +193,14 @@ def signupdelivery():
         mysql.connection.commit()
         flask.flash('Delivery Agent successfully registered')
         return redirect(url_for('login.html'))
-    return render_template("/delivery/signup.html")
+    return render_template("/delivery/signup_deli.html")
     
     
-
-
 @app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/dashboard')
 def index():
     cur = mysql.connection.cursor()
 

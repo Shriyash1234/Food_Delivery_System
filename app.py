@@ -6,9 +6,10 @@ from flask_mysqldb import MySQL
 # import MySQLdb
 
 app = Flask(__name__,static_url_path="/static")
+app.secret_key = 'Top_secret'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '*****'
+app.config['MYSQL_PASSWORD'] = 'sriroot'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 # try:
@@ -126,7 +127,7 @@ def signupcustomer():
             cur.close()
         mysql.connection.commit()
         flask.flash('Customer successfully registered')
-        return redirect(url_for('login.html'))
+        return redirect(url_for('login'))
     return render_template("/customers/signup_user.html")
 
 
@@ -168,7 +169,7 @@ def signuprestaurants():
             cur.close()
         mysql.connection.commit()
         flask.flash('Restaurant successfully registered')
-        return redirect(url_for('login.html'))
+        return redirect(url_for('login'))
     return render_template("/restaurants/signup_restaurant.html")
 
 # as a delivery person
@@ -192,7 +193,7 @@ def signupdelivery():
         cur.insert("INSERT INTO Delivery_Agent (agent_id, vehicle_number, agent_name, phone_num, email, location, license_id, availability) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,vehicle_number,firstname + middle_name + lastname,phone_number,email,location,password,1))
         mysql.connection.commit()
         flask.flash('Delivery Agent successfully registered')
-        return redirect(url_for('login.html'))
+        return redirect(url_for('login'))
     return render_template("/delivery/signup_deli.html")
     
     

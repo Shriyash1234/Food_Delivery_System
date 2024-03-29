@@ -1,24 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Delivery Agent Signup</title>
-<link rel="stylesheet" href="./Assets/CSS/signup.css">
-</head>
-<body>
-
-<div class="container">
-  <h1>Delivery Agent Signup</h1>
-  <form action="#" method="POST" id="deliveryAgentSignupForm">
-    <input type="text" placeholder="Full Name" required>
-    <input type="email" placeholder="Email" required>
-    <input type="password" placeholder="Password" required>
-    <input type="password" placeholder="Confirm Password" required>
-    <input type="text" placeholder="Vehicle Type" required>
-    <button type="submit">Sign Up</button>
-  </form>
-</div>
-
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delivery Agent Signup</title>
+    <link rel="stylesheet" href="./Assets/CSS/signup.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Delivery Agent Signup</h1>
+      <form action="#" method="POST" id="deliveryAgentSignupForm">
+        <input type="text" name="firstname" placeholder="First Name" required />
+        <input
+          type="text"
+          name="middlename"
+          placeholder="Middle Name"
+          required
+        />
+        <input type="text" name="lastname" placeholder="Last Name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="date" name="DOB" placeholder="Date of Birth" required />
+        <input
+          type="text"
+          name="vehicle_number"
+          placeholder="Vehicle Number"
+          required
+        />
+        <input
+          type="tel"
+          name="phone_number"
+          placeholder="Phone Number"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
+        <input type="text" name="location" placeholder="Location" required />
+        <button type="submit">Sign Up</button>
+      </form>
+    </div>
+  </body>
 </html>

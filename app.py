@@ -1,3 +1,4 @@
+from curses import flash
 from datetime import datetime
 import json
 import time
@@ -11,7 +12,7 @@ app = Flask(__name__,static_url_path="/static")
 app.secret_key = 'Top_secret'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '*********'
+app.config['MYSQL_PASSWORD'] = 'Kasvam@123'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 # try:
@@ -62,7 +63,7 @@ def login():
                 session['agent_ID'] = account['agent_ID']
                 msg = 'Logged in successfully !'
                 flask.flash(msg)
-                return redirect(url_for('delivery.agentdetail'))
+                return redirect(url_for('index'))
             else:
                 time.sleep(2)
                 msg = 'Incorrect username / password !'
@@ -76,7 +77,7 @@ def login():
                 session['restaurant_ID'] = account['restaurant_ID']
                 msg = 'Logged in successfully !'
                 flask.flash(msg)
-                return redirect(url_for('restaurant.restdetail'))
+                return redirect(url_for('index'))
             else:
                 time.sleep(2)
                 msg = 'Incorrect username / password !'
@@ -258,7 +259,7 @@ def restaurant_menu(restaurant_id, cuisine_type):
     restaurant_name_data = cur.fetchall()
     restaurant_name_columns = [col[0] for col in cur.description]
     restaurant_name = [dict(zip(restaurant_name_columns, row)) for row in restaurant_name_data]
-    print(food_items)
+    # print(food_items)
 
     return render_template("/customers/menu.html",food_items=food_items,restaurant_name=restaurant_name)
 
@@ -324,6 +325,96 @@ def userdetails():
             food_items.append({'order_id': order_id, 'food_item': food_item[0]})
 
     return render_template("/customers/userdetails.html", user=user, address=address, orders=orders, food_items=food_items)
+
+@app.route('/ordersummary', methods=['GET', 'POST'])
+# CREATE TABLE Payment (
+#   payment_id int(8) NOT NULL,
+#   payment_method varchar(50) NOT NULL,
+#   payment_status ENUM('Successful', 'Failed', 'Pending') NOT NULL,
+#   amount decimal(10,2) NOT NULL,
+#   time timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+#   PRIMARY KEY (payment_id)
+# );
+# CREATE TABLE Orders (
+#   order_id int(8) NOT NULL,
+#   customer_id int(8) NOT NULL,
+#   Payment_id int(8) NOT NULL,
+#   order_status ENUM('Delivered', 'Processing', 'Pending') NOT NULL,
+#   placed_time timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+#   amount decimal(10,2) NOT NULL,
+#   PRIMARY KEY (order_id),
+#   KEY customer_id (customer_id),
+#   KEY Payment_id (Payment_id),
+#   CONSTRAINT Orders_ibfk_1 FOREIGN KEY (customer_id) REFERENCES Customers (customer_id) ON DELETE CASCADE,
+#   CONSTRAINT Orders_ibfk_2 FOREIGN KEY (Payment_id) REFERENCES Payment (Payment_id)
+# ) ;
+# CREATE TABLE Ordered_items (
+#   order_id int(8) NOT NULL,
+#   item_id int(8) NOT NULL,
+#   item_quantity int(8) NOT NULL,
+#   item_rating decimal(3,2) DEFAULT NULL,
+#   item_review varchar(50) DEFAULT NULL,
+#   notes varchar(100) DEFAULT NULL,
+#   KEY order_id (order_id),
+#   KEY item_id (item_id),
+#   CONSTRAINT Ordered_items_ibfk_1 FOREIGN KEY (order_id) REFERENCES Orders (order_id) ON DELETE CASCADE,
+#   CONSTRAINT Ordered_items_ibfk_2 FOREIGN KEY (item_id) REFERENCES Food_Item (item_id) ON DELETE CASCADE,
+#   CONSTRAINT CHK_item_rating_range CHECK (item_rating >= 0 AND item_rating <= 5)
+# );
+# CREATE TABLE Food_Item (
+#   item_id int(8) NOT NULL,
+#   restaurant_id int(8) NOT NULL,
+#   item_name varchar(50) NOT NULL,
+#   item_type varchar(50) NOT NULL,
+#   item_price decimal(10,2) NOT NULL,
+#   item_rating decimal(3,2) DEFAULT NULL,
+#   vegetarian tinyint(1) NOT NULL,
+#   photo_url varchar(100) DEFAULT NULL,
+#   image blob default NULL,
+#   availability tinyint(1) NOT NULL,
+#   order_count int(8) NOT NULL,
+#   PRIMARY KEY (item_id),
+#   KEY restaurant_id (restaurant_id),
+#   CONSTRAINT Food_Item_ibfk_1 FOREIGN KEY (restaurant_id) REFERENCES Restaurant (restaurant_id) ON DELETE CASCADE
+# );
+def ordersummary():
+    if request.method == 'POST':
+        rest_id = session['restaurant_id']
+        customer_id = session['customer_id']
+        cursor = mysql.connection.cursor()
+        cursor.execute('select max(order_id) from Orders;')
+        order_ID = cursor.fetchone()
+        order_ID = str(int(order_ID[0]) + 1)
+        cursor.execute('select max(payment_id) from Payment;')
+        payment_ID = cursor.fetchone()
+        payment_ID = str(int(payment_ID[0]) + 1)
+        order_status = "placed"
+        payment_method = session['payment_method']
+        payment_status = session['payment_status'] #if check box is ticked then payment is successful else pending
+        placed_time = datetime.now()
+        amount =0
+        ordered_items =[] # list of dictionaries which has item_id and item_quantity and item_price
+        for item in request.form.keys():
+            item_ID = item
+            item_quantity = request.form.get(item)
+            notes = request.form.get(item + "_notes")
+            if (item_quantity != "0"):
+                cursor.execute('select * from Food_Item where item_id = %s;', (item_ID,))
+                item_data = cursor.fetchone()
+                item_price = item_data['item_price']
+                amount += item_price * int(item_quantity)
+                ordered_items.append({'item_id': item_ID, 'item_quantity': item_quantity, 'item_price': item_price})
+                cursor.execute('update Food_Item set order_count = order_count + 1 where item_id = %s;', (item_ID,))
+                cursor.execute('insert into Ordered_items (order_id, item_id, item_quantity, item_rating, item_review, notes) values (%s, %s, %s, %s, %s, %s);', (order_ID, item_ID, item_quantity, None, None, notes))
+                mysql.connection.commit()
+        cursor.execute('insert into Orders (order_id, customer_id, Payment_id, order_status, placed_time, amount) values (%s, %s, %s, %s, %s, %s);', (order_ID, customer_id, payment_ID, order_status, placed_time, amount))
+        cursor.execute('insert into Payment (payment_id, payment_method, payment_status, amount, time) values (%s, %s, %s, %s, %s);', (payment_ID, payment_method, payment_status, amount, placed_time))
+        cursor.execute("select name from restaurant where restaurant_ID = %s;", (str(rest_id),))
+        rest_name = cursor.fetchone()[0]
+        cursor.close()
+        flash("Order successfully submitted.")
+        return render_template('customer/orderconfirmation.html', total_price=amount, items=ordered_items, rest_name=rest_name)
+    return redirect(url_for('restaurant_menu'))
 
 
 if __name__ == '__main__':

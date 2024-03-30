@@ -279,7 +279,8 @@ def userdetails():
     cur.execute('''
     SELECT *
     FROM customer_address
-    WHERE customer_id = %s
+    JOIN Address ON customer_address.address_id = Address.address_id
+    WHERE customer_address.customer_id = %s
     ''', (customer_id,))
     address_data = cur.fetchall()
     address_columns = [col[0] for col in cur.description]

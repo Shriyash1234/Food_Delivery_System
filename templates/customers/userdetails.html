@@ -31,6 +31,27 @@
         <!-- {% endfor %} -->
     </table>
 
+    <h2>Address</h2>
+
+    <table>
+        <tr>
+            <th>Building Name</th>
+            <th>Street</th>
+            <th>Pin Code</th>
+            <th>City</th>
+            <th>State</th>
+        </tr>
+        {% for _address in address %}
+        <tr>
+            <td>{{ _address.building_name }}</td>
+            <td>{{ _address.street }}</td>
+            <td>{{ _address.pin_code }}</td>
+            <td>{{ _address.city }}</td>
+            <td>{{ _address.state }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
     <h2>Orders</h2>
     <table>
         <tr>

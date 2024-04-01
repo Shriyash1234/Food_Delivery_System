@@ -63,6 +63,42 @@
           Finalize Order
         </button>
       </div>
+
+      <!-- Add this section to allow users to select payment method -->
+      <div class="payment-method-selection mt-4">
+        <h4>Select Payment Method:</h4>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="paymentMethod"
+            id="card"
+            value="card"
+            checked
+          />
+          <label class="form-check-label" for="card">Card</label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="paymentMethod"
+            id="upi"
+            value="upi"
+          />
+          <label class="form-check-label" for="upi">UPI</label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="paymentMethod"
+            id="cash"
+            value="cash"
+          />
+          <label class="form-check-label" for="cash">Cash</label>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -88,9 +124,33 @@
       }
 
       function finalizeOrder() {
-        // Implement finalizing order functionality here
-        console.log("Order finalized!");
-      }
+        // Get the selected payment method
+        const paymentMethodRadios = document.getElementsByName("paymentMethod");
+        let paymentMethod;
+        for (const radio of paymentMethodRadios) {
+          if (radio.checked) {
+            paymentMethod = radio.value;
+            break;
+          }
+        }
+
+        // Prepare the ordered_items data
+        const orderedItems = [];
+        for (const [itemId, itemQuantity] of Object.entries(itemCounts)) {
+          if (itemQuantity > 0) {
+            orderedItems.push({
+              item_id: itemId,
+              item_quantity: itemQuantity,
+              notes: "", // You can add a field to allow users to enter notes
+                            item_price: "{{ food_items|selectattr('item_id', 'equalto', itemId)|map(attribute='item_price')|first }}",
+                        });
+                    }
+                }
+
+                // Redirect to the ordersummary function
+                const url = "{{ url_for('ordersummary', rest_id=restaurant_id, payment_method=paymentMethod, payment_status='Successful', ordered_items=orderedItems) }}";
+                window.location.href = url;
+            }
     </script>
   </body>
 </html>

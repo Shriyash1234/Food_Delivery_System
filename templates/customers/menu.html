@@ -42,6 +42,9 @@
             <p>
               Item Quantity: <span id="order-count-{{ food.item_id }}">0</span>
             </p>
+            <p>
+              Notes: <input type="text" id="item-notes-{{ food.item_id }}" placeholder="Add notes for {{ food.item_name }}">
+            </p>
             <button
               class="btn btn-success"
               onclick="increaseCount('{{ food.item_id }}')"
@@ -59,45 +62,9 @@
         {% endfor %}
       </div>
       <div class="text-center">
-        <button class="btn btn-primary" onclick="finalizeOrder()">
+        <button class="btn btn-primary" onclick="promptPaymentMethod()">
           Finalize Order
         </button>
-      </div>
-
-      <!-- Add this section to allow users to select payment method -->
-      <div class="payment-method-selection mt-4">
-        <h4>Select Payment Method:</h4>
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="paymentMethod"
-            id="card"
-            value="card"
-            checked
-          />
-          <label class="form-check-label" for="card">Card</label>
-        </div>
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="paymentMethod"
-            id="upi"
-            value="upi"
-          />
-          <label class="form-check-label" for="upi">UPI</label>
-        </div>
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="paymentMethod"
-            id="cash"
-            value="cash"
-          />
-          <label class="form-check-label" for="cash">Cash</label>
-        </div>
       </div>
     </div>
 
@@ -123,34 +90,38 @@
           itemCounts[itemId];
       }
 
-      function finalizeOrder() {
-        // Get the selected payment method
-        const paymentMethodRadios = document.getElementsByName("paymentMethod");
-        let paymentMethod;
-        for (const radio of paymentMethodRadios) {
-          if (radio.checked) {
-            paymentMethod = radio.value;
-            break;
+      function promptPaymentMethod() {
+        const paymentMethod = prompt("Please select a payment method (cash/upi/card)");
+        if (paymentMethod) {
+          finalizeOrder(paymentMethod);
+        }
+      }
+
+      function finalizeOrder(paymentMethod) {
+        const url = window.location.href;
+        const restId = url.split('/').pop();
+
+        const orderedItems = [];
+        for (const itemId in itemCounts) {
+          if (itemCounts[itemId] > 0) {
+            const itemNotes = document.getElementById(`item-notes-${itemId}`).value;
+            const itemPrice = parseFloat(document.querySelector(`[id^='order-count-${itemId}']`).parentNode.querySelector('p:nth-child(3)').textContent.split(': ')[1]);
+            orderedItems.push({
+              item_id: itemId,
+              item_quantity: itemCounts[itemId],
+              notes: itemNotes,
+              item_price: itemPrice
+            });
           }
         }
 
-        // Prepare the ordered_items data
-        const orderedItems = [];
-        for (const [itemId, itemQuantity] of Object.entries(itemCounts)) {
-          if (itemQuantity > 0) {
-            orderedItems.push({
-              item_id: itemId,
-              item_quantity: itemQuantity,
-              notes: "", // You can add a field to allow users to enter notes
-                            item_price: "{{ food_items|selectattr('item_id', 'equalto', itemId)|map(attribute='item_price')|first }}",
-                        });
-                    }
-                }
-
-                // Redirect to the ordersummary function
-                const url = "{{ url_for('ordersummary', rest_id=restaurant_id, payment_method=paymentMethod, payment_status='Successful', ordered_items=orderedItems) }}";
-                window.location.href = url;
-            }
+        if (orderedItems.length > 0) {
+          const redirectUrl = `{{ url_for('ordersummary') }}?rest_id=${restId}&payment_method=${paymentMethod}&payment_status=Successful&ordered_items=${encodeURIComponent(JSON.stringify(orderedItems))}`;
+          window.location.href = redirectUrl;
+        } else {
+          alert("Please select at least one item to order.");
+        }
+      }
     </script>
   </body>
 </html>

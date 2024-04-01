@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurant</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .restaurant-card {
+      margin-bottom: 20px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .restaurant-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .restaurant-card p {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container my-5">
+    <h1 class="text-center mb-4">Restaurants</h1>
+    <div class="row">
+      {% for restaurant in restaurants %}
+        <div class="col-sm-6 col-md-4 col-lg-3">
+          <a href="{{ url_for('restaurant_menu', restaurant_id=restaurant.restaurant_id, cuisine_type=restaurant.cuisine_type) }}" class="text-decoration-none">
+            <div class="restaurant-card">
+              <img src="taj-mahal-restaurant.jpg" alt="Taj Mahal Restaurant" class="img-thumbnail">
+              <h5 class="card-title">{{ restaurant.restaurant_name }}</h5>
+              <p class="card-text">Cuisine: {{ restaurant.cuisine_type }}</p>
+              <p class="card-text">{{ restaurant.description }}</p>
+              <p class="card-text">Timings: {{ restaurant.timings }}</p>
+              <p class="card-text">Rating: {{ restaurant.rating }}</p>
+              <a href="{{ url_for('restaurant_menu', restaurant_id=restaurant.restaurant_id, cuisine_type=restaurant.cuisine_type) }}" class="btn btn-primary">Order Now</a>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

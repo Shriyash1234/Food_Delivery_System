@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .menu-item {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        {% for item in restaurant_name %}
+        <h1 class="text-center mb-4">{{ item.restaurant_name }}</h1>
+        {% endfor %}
+        <div class="row">
+            {% for food in food_items %}
+            <div class="col-md-6 col-lg-4">
+                <div class="menu-item">
+                    <img src="{{ food.item_image }}" class="img-fluid mb-3" alt="{{ food.item_name }}">
+                    <h5>{{ food.item_name }}</h5>
+                    <p>Price: {{ food.item_price }}</p>
+                    <p>Rating: {{ food.item_rating }}</p>
+                    <p>Type: {{ food.item_type }}</p>
+                    <p>Orders: {{ food.order_count }}</p>
+                    <p>Availability: {{ food.availability }}</p>
+                    <p>Vegetarian: {{ food.vegetarian }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

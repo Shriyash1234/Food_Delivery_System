@@ -12,7 +12,7 @@ app = Flask(__name__,static_url_path="/static")
 app.secret_key = 'Top_secret'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Kasvam@123'
+app.config['MYSQL_PASSWORD'] = '********'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 # try:
@@ -167,7 +167,7 @@ def signuprestaurants():
                 cur.execute("INSERT INTO Address (address_id, building_name, street, pin_code, city, state) VALUES (%s,%s,%s,%s,%s,%s)",(address_ID,building_name,street_name,pin_code,city,state))
             else:
                 address_ID = address_ID[0]
-            cur.execute("INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, contact_details, timings, rating) VALUES (%s,%s,%s,%s,%s,%s,%s)",(password,ID,restaurant_name,cuisine_type,email + phone_number,timings,0))
+            cur.execute("INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, contact_details, timings, rating) VALUES (%s,%s,%s,%s,%s,%s,%s)",(password,ID,restaurant_name,cuisine_type,json.dumps({'email': email, 'phone_number': phone_number}),timings,0))
             cur.execute("INSERT INTO Restaurant_Address (restaurant_id, address_id) VALUES (%s,%s)",(ID,address_ID))
             mysql.connection.commit()
         except:
@@ -197,7 +197,7 @@ def signupdelivery():
         cur.execute("select max(agent_id) from Delivery_Agent")
         ID = cur.fetchone()
         ID = str(int(ID[0]) + 1)
-        cur.insert("INSERT INTO Delivery_Agent (agent_id, vehicle_number, agent_name, phone_num, email, location, license_id, availability) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,vehicle_number,firstname + middle_name + lastname,phone_number,email,location,password,1))
+        cur.insert("INSERT INTO Delivery_Agent (agent_id, vehicle_number, agent_name, phone_num, email, location, license_id, availability) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,vehicle_number,firstname +" "+ middle_name +" "+ lastname,phone_number,email,location,password,1))
         mysql.connection.commit()
         flask.flash('Delivery Agent successfully registered')
         return redirect(url_for('login'))

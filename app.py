@@ -363,4 +363,3 @@ def ordersummary(rest_id,payment_method,payment_status,ordered_items):
 
 if __name__ == '__main__':
     app.run(debug=True)
-

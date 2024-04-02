@@ -43,7 +43,12 @@
               Item Quantity: <span id="order-count-{{ food.item_id }}">0</span>
             </p>
             <p>
-              Notes: <input type="text" id="item-notes-{{ food.item_id }}" placeholder="Add notes for {{ food.item_name }}">
+              Notes:
+              <input
+                type="text"
+                id="item-notes-{{ food.item_id }}"
+                placeholder="Add notes for {{ food.item_name }}"
+              />
             </p>
             <button
               class="btn btn-success"
@@ -91,7 +96,9 @@
       }
 
       function promptPaymentMethod() {
-        const paymentMethod = prompt("Please select a payment method (cash/upi/card)");
+        const paymentMethod = prompt(
+          "Please select a payment method (cash/upi/card)"
+        );
         if (paymentMethod) {
           finalizeOrder(paymentMethod);
         }
@@ -99,24 +106,33 @@
 
       function finalizeOrder(paymentMethod) {
         const url = window.location.href;
-        const restId = url.split('/').pop();
+        const restId = url.split("/").pop();
 
         const orderedItems = [];
         for (const itemId in itemCounts) {
           if (itemCounts[itemId] > 0) {
-            const itemNotes = document.getElementById(`item-notes-${itemId}`).value;
-            const itemPrice = parseFloat(document.querySelector(`[id^='order-count-${itemId}']`).parentNode.querySelector('p:nth-child(3)').textContent.split(': ')[1]);
+            const itemNotes = document.getElementById(
+              `item-notes-${itemId}`
+            ).value;
+            const itemPrice = parseFloat(
+              document
+                .querySelector(`[id^='order-count-${itemId}']`)
+                .parentNode.querySelector("p:nth-child(3)")
+                .textContent.split(": ")[1]
+            );
             orderedItems.push({
               item_id: itemId,
               item_quantity: itemCounts[itemId],
               notes: itemNotes,
-              item_price: itemPrice
+              item_price: itemPrice,
             });
           }
         }
 
         if (orderedItems.length > 0) {
-          const redirectUrl = `{{ url_for('ordersummary') }}?rest_id=${restId}&payment_method=${paymentMethod}&payment_status=Successful&ordered_items=${encodeURIComponent(JSON.stringify(orderedItems))}`;
+          const redirectUrl = `{{ url_for('ordersummary') }}?rest_id=${restId}&payment_method=${paymentMethod}&payment_status=Successful&ordered_items=${encodeURIComponent(
+            JSON.stringify(orderedItems)
+          )}`;
           window.location.href = redirectUrl;
         } else {
           alert("Please select at least one item to order.");

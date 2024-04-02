@@ -42,6 +42,14 @@
             <p>
               Item Quantity: <span id="order-count-{{ food.item_id }}">0</span>
             </p>
+            <p>
+              Notes:
+              <input
+                type="text"
+                id="item-notes-{{ food.item_id }}"
+                placeholder="Add notes for {{ food.item_name }}"
+              />
+            </p>
             <button
               class="btn btn-success"
               onclick="increaseCount('{{ food.item_id }}')"
@@ -58,49 +66,15 @@
         </div>
         {% endfor %}
       </div>
-      <div class="text-center mt-4">
-        <div>
-          <input
-            type="checkbox"
-            id="cashCheckbox"
-            name="payment_method"
-            value="cash"
-            onclick="togglePaymentMethod('cash')"
-          />
-          <label for="cashCheckbox">Cash</label><br />
-          <input
-            type="checkbox"
-            id="cardCheckbox"
-            name="payment_method"
-            value="card"
-            onclick="togglePaymentMethod('card')"
-          />
-          <label for="cardCheckbox">Card</label><br />
-          <input
-            type="checkbox"
-            id="upiCheckbox"
-            name="payment_method"
-            value="upi"
-            onclick="togglePaymentMethod('upi')"
-          />
-          <label for="upiCheckbox">UPI</label><br />
-        </div>
-        <form
-          id="orderForm"
-          action="/submit_order/{{ restaurantId }}"
-          method="post"
-        >
-          <button type="button" class="btn btn-primary ml-2">
-            Finalize Order
-          </button>
-        </form>
+      <div class="text-center">
+        <button class="btn btn-primary" onclick="promptPaymentMethod()">
+          Finalize Order
+        </button>
       </div>
     </div>
 
     <script>
       let itemCounts = {};
-      let selectedPaymentMethod = "";
-      const restaurantId = "{{ restaurantId }}";
 
       function increaseCount(itemId) {
         if (!itemCounts[itemId]) {
@@ -121,25 +95,48 @@
           itemCounts[itemId];
       }
 
-      function togglePaymentMethod(method) {
-        selectedPaymentMethod = method;
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        checkboxes.forEach((checkbox) => {
-          if (checkbox.id !== method + "Checkbox") {
-            checkbox.checked = false;
-          }
-        });
-        console.log("Selected Payment Method:", selectedPaymentMethod);
+      function promptPaymentMethod() {
+        const paymentMethod = prompt(
+          "Please select a payment method (cash/upi/card)"
+        );
+        if (paymentMethod) {
+          finalizeOrder(paymentMethod);
+        }
       }
 
-      function submitOrder() {
-        const form = document.getElementById("orderForm");
-        const paymentMethodInput = document.createElement("input");
-        paymentMethodInput.setAttribute("type", "hidden");
-        paymentMethodInput.setAttribute("name", "payment_method");
-        paymentMethodInput.setAttribute("value", selectedPaymentMethod);
-        form.appendChild(paymentMethodInput);
-        form.submit();
+      function finalizeOrder(paymentMethod) {
+        const url = window.location.href;
+        const restId = url.split("/").pop();
+
+        const orderedItems = [];
+        for (const itemId in itemCounts) {
+          if (itemCounts[itemId] > 0) {
+            const itemNotes = document.getElementById(
+              `item-notes-${itemId}`
+            ).value;
+            const itemPrice = parseFloat(
+              document
+                .querySelector(`[id^='order-count-${itemId}']`)
+                .parentNode.querySelector("p:nth-child(3)")
+                .textContent.split(": ")[1]
+            );
+            orderedItems.push({
+              item_id: itemId,
+              item_quantity: itemCounts[itemId],
+              notes: itemNotes,
+              item_price: itemPrice,
+            });
+          }
+        }
+
+        if (orderedItems.length > 0) {
+          const redirectUrl = `{{ url_for('ordersummary') }}?rest_id=${restId}&payment_method=${paymentMethod}&payment_status=Successful&ordered_items=${encodeURIComponent(
+            JSON.stringify(orderedItems)
+          )}`;
+          window.location.href = redirectUrl;
+        } else {
+          alert("Please select at least one item to order.");
+        }
       }
     </script>
   </body>

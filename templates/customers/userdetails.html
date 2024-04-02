@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>User Details</title>
+    <link rel="stylesheet" href="../static/CSS/userdetails.css" />
 </head>
 <body>
     <h1>User Details</h1>
@@ -24,8 +25,8 @@
             <td>{{ user.middle_name }}</td>
             <td>{{ user.last_name }}</td>
             <td>{{ user.dob }}</td>
-            <td>{{ user.contact_details }}</td>
-            <td>{{ user.email }}</td>
+            <td>{{ phone }}</td>
+            <td>{{ email}}</td>
             <td>{{ user.password }}</td>
         </tr>
         <!-- {% endfor %} -->
@@ -57,23 +58,33 @@
         <tr>
             <th>Order ID</th>
             <th>Date</th>
+            <th>Time</th>
             <th>Total Amount</th>
             <th>Ordered items</th>
         </tr>
         {% for order in orders %}
         <tr>
             <td>{{ order.order_id }}</td>
-            <td>{{ order.order_date }}</td>
-            <td>{{ order.order_total }}</td>
+            <td>{{ order.placed_time.date() }}</td>
+            <td>{{ order.placed_time.time() }}</td>
+            <td>{{ order.amount }}</td>
             <td>
                 <table>
                     <tr>
                         <th>Food Item</th>
+                        <th>Item Type</th>
+                        <th>Item Price</th>
+                        <th>Item Rating</th>
+                        <th> Count</th>
                     </tr>
                     {% for item in food_items %}
                     <tr>
                     {% if order.order_id == item.order_id %}
-                        <td>{{ item.food_item }}</td>
+                        <td>{{ item.food_item.item_name }}</td>
+                        <td>{{ item.food_item.item_type }}</td>
+                        <td>{{ item.food_item.item_price }}</td>
+                        <td>{{ item.food_item.item_rating }}</td>
+                        <td>{{ item.food_item.order_count }}</td>
                     {% endif %}
                     </tr>
                     {% endfor %}

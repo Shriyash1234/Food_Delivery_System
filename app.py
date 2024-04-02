@@ -324,8 +324,10 @@ def userdetails():
             food_item_columns = [col[0] for col in cur.description]
             food_item = [dict(zip(food_item_columns, row)) for row in food_item_data]
             food_items.append({'order_id': order_id, 'food_item': food_item[0]})
-
-    return render_template("/customers/userdetails.html", user=user, address=address, orders=orders, food_items=food_items)
+    
+        print(orders)
+    contact_details = json.loads(user[0]['contact_details'])
+    return render_template("/customers/userdetails.html", user=user, address=address, orders=orders, food_items=food_items, phone = contact_details.get('phone'), email = contact_details.get('email'))
 
 @app.route('/ordersummary', methods=['GET', 'POST'])
 def ordersummary(rest_id,payment_method,payment_status,ordered_items):
@@ -363,3 +365,4 @@ def ordersummary(rest_id,payment_method,payment_status,ordered_items):
 
 if __name__ == '__main__':
     app.run(debug=True)
+

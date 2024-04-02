@@ -12,7 +12,7 @@ app = Flask(__name__,static_url_path="/static")
 app.secret_key = 'Top_secret'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Kasvam@123'
+app.config['MYSQL_PASSWORD'] = 'sriroot'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 # try:
@@ -167,7 +167,7 @@ def signuprestaurants():
                 cur.execute("INSERT INTO Address (address_id, building_name, street, pin_code, city, state) VALUES (%s,%s,%s,%s,%s,%s)",(address_ID,building_name,street_name,pin_code,city,state))
             else:
                 address_ID = address_ID[0]
-            cur.execute("INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, contact_details, timings, rating) VALUES (%s,%s,%s,%s,%s,%s,%s)",(password,ID,restaurant_name,cuisine_type,json.dumps({'email': email, 'phone_number': phone_number}),timings,0))
+            cur.execute("INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, contact_details, timings, rating) VALUES (%s,%s,%s,%s,%s,%s,%s)",(password,ID,restaurant_name,cuisine_type,email + phone_number,timings,0))
             cur.execute("INSERT INTO Restaurant_Address (restaurant_id, address_id) VALUES (%s,%s)",(ID,address_ID))
             mysql.connection.commit()
         except:
@@ -197,7 +197,7 @@ def signupdelivery():
         cur.execute("select max(agent_id) from Delivery_Agent")
         ID = cur.fetchone()
         ID = str(int(ID[0]) + 1)
-        cur.insert("INSERT INTO Delivery_Agent (agent_id, vehicle_number, agent_name, phone_num, email, location, license_id, availability) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,vehicle_number,firstname +" "+ middle_name +" "+ lastname,phone_number,email,location,password,1))
+        cur.insert("INSERT INTO Delivery_Agent (agent_id, vehicle_number, agent_name, phone_num, email, location, license_id, availability) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,vehicle_number,firstname + middle_name + lastname,phone_number,email,location,password,1))
         mysql.connection.commit()
         flask.flash('Delivery Agent successfully registered')
         return redirect(url_for('login'))
@@ -328,37 +328,87 @@ def userdetails():
     return render_template("/customers/userdetails.html", user=user, address=address, orders=orders, food_items=food_items)
 
 @app.route('/ordersummary', methods=['GET', 'POST'])
+# CREATE TABLE Payment (
+#   payment_id int(8) NOT NULL,
+#   payment_method varchar(50) NOT NULL,
+#   payment_status ENUM('Successful', 'Failed', 'Pending') NOT NULL,
+#   amount decimal(10,2) NOT NULL,
+#   time timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+#   PRIMARY KEY (payment_id)
+# );
+# CREATE TABLE Orders (
+#   order_id int(8) NOT NULL,
+#   customer_id int(8) NOT NULL,
+#   Payment_id int(8) NOT NULL,
+#   order_status ENUM('Delivered', 'Processing', 'Pending') NOT NULL,
+#   placed_time timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+#   amount decimal(10,2) NOT NULL,
+#   PRIMARY KEY (order_id),
+#   KEY customer_id (customer_id),
+#   KEY Payment_id (Payment_id),
+#   CONSTRAINT Orders_ibfk_1 FOREIGN KEY (customer_id) REFERENCES Customers (customer_id) ON DELETE CASCADE,
+#   CONSTRAINT Orders_ibfk_2 FOREIGN KEY (Payment_id) REFERENCES Payment (Payment_id)
+# ) ;
+# CREATE TABLE Ordered_items (
+#   order_id int(8) NOT NULL,
+#   item_id int(8) NOT NULL,
+#   item_quantity int(8) NOT NULL,
+#   item_rating decimal(3,2) DEFAULT NULL,
+#   item_review varchar(50) DEFAULT NULL,
+#   notes varchar(100) DEFAULT NULL,
+#   KEY order_id (order_id),
+#   KEY item_id (item_id),
+#   CONSTRAINT Ordered_items_ibfk_1 FOREIGN KEY (order_id) REFERENCES Orders (order_id) ON DELETE CASCADE,
+#   CONSTRAINT Ordered_items_ibfk_2 FOREIGN KEY (item_id) REFERENCES Food_Item (item_id) ON DELETE CASCADE,
+#   CONSTRAINT CHK_item_rating_range CHECK (item_rating >= 0 AND item_rating <= 5)
+# );
+# CREATE TABLE Food_Item (
+#   item_id int(8) NOT NULL,
+#   restaurant_id int(8) NOT NULL,
+#   item_name varchar(50) NOT NULL,
+#   item_type varchar(50) NOT NULL,
+#   item_price decimal(10,2) NOT NULL,
+#   item_rating decimal(3,2) DEFAULT NULL,
+#   vegetarian tinyint(1) NOT NULL,
+#   photo_url varchar(100) DEFAULT NULL,
+#   image blob default NULL,
+#   availability tinyint(1) NOT NULL,
+#   order_count int(8) NOT NULL,
+#   PRIMARY KEY (item_id),
+#   KEY restaurant_id (restaurant_id),
+#   CONSTRAINT Food_Item_ibfk_1 FOREIGN KEY (restaurant_id) REFERENCES Restaurant (restaurant_id) ON DELETE CASCADE
+# );
 def ordersummary(rest_id,payment_method,payment_status,ordered_items):
-    customer_id = session["customer_id"]
-    cursor = mysql.connection.cursor()
-    cursor.execute('select max(order_id) from Orders;')
-    order_ID = cursor.fetchone()
-    order_ID = str(int(order_ID[0]) + 1)
-    cursor.execute('select max(payment_id) from Payment;')
-    payment_ID = cursor.fetchone()
-    payment_ID = str(int(payment_ID[0]) + 1)
-    order_status = "placed"
-    placed_time = datetime.now()
-    amount =0
-    # ordered_items is list of dictionaries where each dictionary contains item_id, item_quantity, notes, item_price
-    for item in ordered_items:
-        item_ID = item["item_id"]
-        item_quantity = item["item_quantity"]
-        notes = item["notes"]
-        item_price = item['item_price']
-        if (item_quantity != "0"):
-            amount += item_price * int(item_quantity)
-            cursor.execute('update Food_Item set order_count = order_count + 1 where item_id = %s;', (item_ID,))
-            cursor.execute('insert into Ordered_items (order_id, item_id, item_quantity, item_rating, item_review, notes) values (%s, %s, %s, %s, %s, %s);', (order_ID, item_ID, item_quantity, None, None, notes))
-            mysql.connection.commit()
-    cursor.execute('insert into Orders (order_id, customer_id, Payment_id, order_status, placed_time, amount) values (%s, %s, %s, %s, %s, %s);', (order_ID, customer_id, payment_ID, order_status, placed_time, amount))
-    cursor.execute('insert into Payment (payment_id, payment_method, payment_status, amount, time) values (%s, %s, %s, %s, %s);', (payment_ID, payment_method, payment_status, amount, placed_time))
-    cursor.execute("select name from restaurant where restaurant_ID = %s;", (str(rest_id),))
-    rest_name = cursor.fetchone()[0]
-    cursor.close()
-    flash("Order successfully submitted.")
-    return render_template('customer/ordersummary.html', total_price=amount, items=ordered_items, rest_name=rest_name)
-
+    if request.method == 'POST':
+        customer_id = session["customer_id"]
+        cursor = mysql.connection.cursor()
+        cursor.execute('select max(order_id) from Orders;')
+        order_ID = cursor.fetchone()
+        order_ID = str(int(order_ID[0]) + 1)
+        cursor.execute('select max(payment_id) from Payment;')
+        payment_ID = cursor.fetchone()
+        payment_ID = str(int(payment_ID[0]) + 1)
+        order_status = "placed"
+        placed_time = datetime.now()
+        amount =0
+        for item in ordered_items:
+            item_ID = item["item_id"]
+            item_quantity = item["item_quantity"]
+            notes = item["notes"]
+            item_price = item['item_price']
+            if (item_quantity != "0"):
+                amount += item_price * int(item_quantity)
+                cursor.execute('update Food_Item set order_count = order_count + 1 where item_id = %s;', (item_ID,))
+                cursor.execute('insert into Ordered_items (order_id, item_id, item_quantity, item_rating, item_review, notes) values (%s, %s, %s, %s, %s, %s);', (order_ID, item_ID, item_quantity, None, None, notes))
+                mysql.connection.commit()
+        cursor.execute('insert into Orders (order_id, customer_id, Payment_id, order_status, placed_time, amount) values (%s, %s, %s, %s, %s, %s);', (order_ID, customer_id, payment_ID, order_status, placed_time, amount))
+        cursor.execute('insert into Payment (payment_id, payment_method, payment_status, amount, time) values (%s, %s, %s, %s, %s);', (payment_ID, payment_method, payment_status, amount, placed_time))
+        cursor.execute("select name from restaurant where restaurant_ID = %s;", (str(rest_id),))
+        rest_name = cursor.fetchone()[0]
+        cursor.close()
+        flash("Order successfully submitted.")
+        return render_template('customer/ordersummary.html', total_price=amount, items=ordered_items, rest_name=rest_name)
+    return redirect(url_for('restaurant_menu'))
 
 
 if __name__ == '__main__':

@@ -141,6 +141,7 @@ DROP TABLE IF EXISTS Orders;
 CREATE TABLE Orders (
   order_id int(8) NOT NULL,
   customer_id int(8) NOT NULL,
+  restaurant_id int(8) NOT NULL,
   Payment_id int(8) NOT NULL,
   order_status ENUM('Delivered', 'Processing', 'Pending') NOT NULL,
   placed_time timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -152,23 +153,23 @@ CREATE TABLE Orders (
   CONSTRAINT Orders_ibfk_2 FOREIGN KEY (Payment_id) REFERENCES Payment (Payment_id)
 ) ;
 
-INSERT INTO Orders (order_id, customer_id, Payment_id, order_status, amount)
+INSERT INTO Orders (order_id, customer_id,restaurant_id, Payment_id, order_status, amount)
 VALUES
-(1, 1, 1, 'Delivered', 850.00),
-(2, 2, 2, 'Delivered', 1440.00),
-(3, 3, 3, 'Delivered', 540.00),
-(4, 4, 4, 'Delivered', 400.00),
-(5, 5, 5, 'Delivered', 500.00),
-(6, 6, 6, 'Delivered', 620.00),
-(7, 7, 7, 'Delivered', 920.00),
-(8, 8, 8, 'Delivered', 300.00);
-(9, 9, 9, 'Delivered', 300.00);
-(10, 10, 10, 'Delivered', 300.00);
-(11, 11, 11, 'Delivered', 300.00);
-(12, 12, 12, 'Delivered', 300.00);
-(13, 13, 13, 'Delivered', 300.00);
-(14, 14, 14, 'Delivered', 300.00);
-(15, 15, 15, 'Processing', 300.00);
+(1, 1, 1, 1,'Delivered', 850.00),
+(2, 2, 2, 2,'Delivered', 1440.00),
+(3, 3, 3, 3,'Delivered', 540.00),
+(4, 4, 4, 4,'Delivered', 400.00),
+(5, 5, 5, 5,'Delivered', 500.00),
+(6, 6, 6, 6,'Delivered', 620.00),
+(7, 7, 7, 7,'Delivered', 920.00),
+(8, 8, 8, 8,'Delivered', 300.00),
+(9, 9, 9, 9,'Delivered', 300.00),
+(10, 10, 10,10, 'Delivered', 300.00),
+(11, 11, 11,11, 'Delivered', 300.00),
+(12, 12, 12,12, 'Delivered', 300.00),
+(13, 13, 13,13, 'Delivered', 300.00),
+(14, 14, 14,14, 'Delivered', 300.00),
+(15, 15, 15,15, 'Processing', 300.00);
 
 
 DROP TABLE IF EXISTS Delivery_Agent;
@@ -240,13 +241,13 @@ VALUES
 (5, 5, 5,5,'Friendly delivery person', 5, 5.50, '2024-02-14 16:00:00', '2024-02-14 16:30:00', 'Delivered', 2.00),
 (6, 6, 6,6,'Great experience', 2, 6.50, '2024-02-14 17:15:00', '2024-02-14 17:45:00', 'Delivered', 3.00),
 (7, 7, 7,7,'Polite and efficient', 4, 7.50, '2024-02-14 18:30:00', '2024-02-14 19:00:00', 'Delivered', 2.50),
-(8, 8, 8,8,'Satisfactory service', 1, 5.50, '2024-02-14 20:00:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
-(9,9,9,9,'Satisfactory service', 1, 6.00, '2024-02-14 21:00:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
-(10, 10, 10,10,'Satisfactory service', 2, 8.00, '2024-02-14 20:30:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
-(11, 11,11,11,'Satisfactory service', 3, 7.50, '2024-02-14 21:30:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
-(12, 12, 12,12,'Satisfactory service', 4, 8.50, '2024-02-14 19:30:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
-(13,13, 13,13,'Satisfactory service', 5, 9.50, '2024-02-14 21:20:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
-(14, 14, 14,14,'Satisfactory service', 3, 8.00, '2024-02-14 20:10:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
+(8, 8, 8,8,'Satisfactory service', 1, 5.50, '2024-02-14 20:00:00', '2024-02-14 20:30:00', 'Delivered', 3.50),
+(9,9,9,9,'Satisfactory service', 1, 6.00, '2024-02-14 21:00:00', '2024-02-14 20:30:00', 'Delivered', 3.50),
+(10, 10, 10,10,'Satisfactory service', 2, 8.00, '2024-02-14 20:30:00', '2024-02-14 20:30:00', 'Delivered', 3.50),
+(11, 11,11,11,'Satisfactory service', 3, 7.50, '2024-02-14 21:30:00', '2024-02-14 20:30:00', 'Delivered', 3.50),
+(12, 12, 12,12,'Satisfactory service', 4, 8.50, '2024-02-14 19:30:00', '2024-02-14 20:30:00', 'Delivered', 3.50),
+(13,13, 13,13,'Satisfactory service', 5, 9.50, '2024-02-14 21:20:00', '2024-02-14 20:30:00', 'Delivered', 3.50),
+(14, 14, 14,14,'Satisfactory service', 3, 8.00, '2024-02-14 20:10:00', '2024-02-14 20:30:00', 'Delivered', 3.50),
 (15, 15, 15,15,'Satisfactory service', 4, 7.00, '2024-02-14 23:10:00', '2024-02-14 20:30:00', 'Placed', 3.50);
 
 DROP TABLE IF EXISTS Restaurant;

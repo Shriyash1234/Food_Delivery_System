@@ -1,10 +1,11 @@
 from curses import flash
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import time
 import MySQLdb
 from flask import Flask,jsonify,render_template,request,redirect,url_for,session
 import flask
+import random
 from flask_mysqldb import MySQL
 # import MySQLdb
 
@@ -12,7 +13,7 @@ app = Flask(__name__,static_url_path="/static")
 app.secret_key = 'Top_secret'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Kasvam@123'
+app.config['MYSQL_PASSWORD'] = 'shriyash123'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 # try:
@@ -380,8 +381,10 @@ def ordersummary():
     cursor.execute('select max(payment_id) from Payment;')
     payment_ID = cursor.fetchone()
     payment_ID = str(int(payment_ID[0]) + 1)
+    agent_id = random.randint(1, 15)
     cursor.execute('insert into payment (payment_id, payment_method, payment_status, amount, time) values (%s, %s, %s, %s, %s);', (payment_ID, payment_method, payment_status, amount, placed_time))
-    cursor.execute('insert into orders (order_id, customer_id, payment_id, order_status, placed_time, amount) values (%s, %s, %s, %s, %s, %s);', (order_ID, customer_id, payment_ID, order_status, placed_time, amount))
+    cursor.execute('insert into orders (order_id, customer_id,restaurant_id, payment_id, order_status, placed_time, amount) values (%s, %s,%s, %s, %s, %s, %s);', (order_ID, customer_id,rest_id, payment_ID, order_status, placed_time, amount))
+    cursor.execute('insert into delivery (order_id, agent_id,customer_id, restaurant_id, delivery_review, delivery_rating, delivery_charges, pickup_time, delivery_time, delivery_status,tip) values (%s, %s,%s, %s, %s, %s, %s,%s, %s,%s, %s);', (order_ID,agent_id, customer_id,rest_id, "", random.randint(1, 5), random.randint(1, 9),datetime.now(),datetime.now()+timedelta(minutes=30),"Placed",random.randint(1, 5)))
     # ordered_items is list of dictionaries where each dictionary contains item_id, item_quantity, notes, item_price
     for item in ordered_items:
         item_ID = item["item_id"]

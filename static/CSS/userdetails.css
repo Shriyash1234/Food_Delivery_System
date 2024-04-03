@@ -35,3 +35,13 @@ table tr:hover {
     background-color: #e0e0e0;
     transition: background-color 0.3s;
 }
+
+.btn-back {
+    background-color: #555; /* Dark grey color */
+    color: #fff; /* White text color */
+    padding: 10px 20px; /* Adjust padding as needed */
+    border: none; /* Remove default button border */
+    border-radius: 5px; /* Optional: Add rounded corners */
+    text-decoration: none; /* Remove default link underline */
+    display: inline-block; /* Ensure proper button display */
+}

@@ -161,7 +161,7 @@ VALUES
 (5, 5, 5, 'Processing', 500.00),
 (6, 6, 6, 'Pending', 620.00),
 (7, 7, 7, 'Delivered', 920.00),
-(8, 8, 8, 'Processing', 300.00),
+(8, 8, 8, 'Processing', 300.00);
 
 DROP TABLE IF EXISTS Delivery_Agent;
 
@@ -174,6 +174,7 @@ CREATE TABLE Delivery_Agent (
   location varchar(100) NOT NULL,
   license_id varchar(20) NOT NULL,
   availability tinyint(1) NOT NULL,
+  password varchar(50) NOT NULL,
   PRIMARY KEY (agent_id),
   UNIQUE KEY vehicle_number (vehicle_number),
   UNIQUE KEY phone_num (phone_num),
@@ -229,14 +230,7 @@ VALUES
 (5, 5, 'Friendly delivery person', 5, 5.50, '2024-02-14 16:00:00', '2024-02-14 16:30:00', 'Delivered', 2.00),
 (6, 6, 'Great experience', 2, 6.50, '2024-02-14 17:15:00', '2024-02-14 17:45:00', 'Delivered', 3.00),
 (7, 7, 'Polite and efficient', 4, 7.50, '2024-02-14 18:30:00', '2024-02-14 19:00:00', 'Delivered', 2.50),
-(8, 8, 'Satisfactory service', 1, 5.50, '2024-02-14 20:00:00', '2024-02-14 20:30:00', 'Delivered', 3.50),
-(9, 9, 'Timely delivery', 4, 6.00, '2024-02-14 21:45:00', '2024-02-14 22:15:00', 'Delivered', 4.00),
-(10, 10, 'Efficient handling', 3, 7.00, '2024-02-14 23:30:00', '2024-02-15 00:00:00', 'Delivered', 2.00),
-(11, 11, 'Good communication', 4, 5.50, '2024-02-15 01:15:00', '2024-02-15 01:45:00', 'Delivered', 3.50),
-(12, 12, 'Professional behavior', 5, 6.00, '2024-02-15 02:30:00', '2024-02-15 03:00:00', 'Delivered', 4.00),
-(13, 13, 'Fast and reliable', 4, 7.50, '2024-02-15 04:45:00', '2024-02-15 05:15:00', 'Delivered', 2.50),
-(14, 14, 'Neat and clean delivery', 2, 5.50, '2024-02-15 06:00:00', '2024-02-15 06:30:00', 'Delivered', 3.50),
-(15, 15, 'Friendly and helpful', 1, 6.00, '2024-02-15 07:15:00', '2024-02-15 07:45:00', 'Delivered', 4.00);
+(8, 8, 'Satisfactory service', 1, 5.50, '2024-02-14 20:00:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
 
 
 DROP TABLE IF EXISTS Restaurant;

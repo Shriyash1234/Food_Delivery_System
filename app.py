@@ -12,7 +12,7 @@ app = Flask(__name__,static_url_path="/static")
 app.secret_key = 'Top_secret'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Kasvam@123'
+app.config['MYSQL_PASSWORD'] = 'shriyash123'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 # try:
@@ -330,36 +330,40 @@ def userdetails():
     return render_template("/customers/userdetails.html", user=user, address=address, orders=orders, food_items=food_items, phone = contact_details.get('phone'), email = contact_details.get('email'))
 
 @app.route('/ordersummary', methods=['GET', 'POST'])
-def ordersummary(rest_id,payment_method,payment_status,ordered_items):
+def ordersummary():
+    rest_id = request.args.get('rest_id')
+    payment_method = request.args.get('payment_method')
+    payment_status = request.args.get('payment_status')
+    ordered_items = json.loads(request.args.get('ordered_items'))
     customer_id = session["customer_id"]
-    cursor = mysql.connection.cursor()
-    cursor.execute('select max(order_id) from Orders;')
-    order_ID = cursor.fetchone()
-    order_ID = str(int(order_ID[0]) + 1)
-    cursor.execute('select max(payment_id) from Payment;')
-    payment_ID = cursor.fetchone()
-    payment_ID = str(int(payment_ID[0]) + 1)
-    order_status = "placed"
+    order_status = "Processing"
     placed_time = datetime.now()
     amount =0
     # ordered_items is list of dictionaries where each dictionary contains item_id, item_quantity, notes, item_price
     for item in ordered_items:
+        cursor = mysql.connection.cursor()
+        cursor.execute('select max(order_id) from Orders;')
+        order_ID = cursor.fetchone()
+        order_ID = str(int(order_ID[0]) + 1)
+        cursor.execute('select max(payment_id) from Payment;')
+        payment_ID = cursor.fetchone()
+        payment_ID = str(int(payment_ID[0]) + 1)
         item_ID = item["item_id"]
         item_quantity = item["item_quantity"]
         notes = item["notes"]
         item_price = item['item_price']
         if (item_quantity != "0"):
             amount += item_price * int(item_quantity)
-            cursor.execute('update Food_Item set order_count = order_count + 1 where item_id = %s;', (item_ID,))
-            cursor.execute('insert into Ordered_items (order_id, item_id, item_quantity, item_rating, item_review, notes) values (%s, %s, %s, %s, %s, %s);', (order_ID, item_ID, item_quantity, None, None, notes))
+            cursor.execute('update food_item set order_count = order_count + 1 where item_id = %s;', (item_ID,))
+            cursor.execute('insert into payment (payment_id, payment_method, payment_status, amount, time) values (%s, %s, %s, %s, %s);', (payment_ID, payment_method, payment_status, amount, placed_time))
+            cursor.execute('insert into orders (order_id, customer_id, payment_id, order_status, placed_time, amount) values (%s, %s, %s, %s, %s, %s);', (order_ID, customer_id, payment_ID, order_status, placed_time, amount))
+            cursor.execute('insert into ordered_items (order_id, item_id, item_quantity, item_rating, item_review, notes) values (%s, %s, %s, %s, %s, %s);', (order_ID, item_ID, item_quantity, 4, None, notes))
             mysql.connection.commit()
-    cursor.execute('insert into Orders (order_id, customer_id, Payment_id, order_status, placed_time, amount) values (%s, %s, %s, %s, %s, %s);', (order_ID, customer_id, payment_ID, order_status, placed_time, amount))
-    cursor.execute('insert into Payment (payment_id, payment_method, payment_status, amount, time) values (%s, %s, %s, %s, %s);', (payment_ID, payment_method, payment_status, amount, placed_time))
-    cursor.execute("select name from restaurant where restaurant_ID = %s;", (str(rest_id),))
-    rest_name = cursor.fetchone()[0]
+    # cursor.execute("select name from restaurant where restaurant_ID = %s;", (str(rest_id),))
+    # rest_name = cursor.fetchone()[0]
     cursor.close()
-    flash("Order successfully submitted.")
-    return render_template('customer/ordersummary.html', total_price=amount, items=ordered_items, rest_name=rest_name)
+    # flash("Order successfully submitted.")
+    return render_template('customers/ordersummary.html', total_price=amount, items=ordered_items, rest_name="rest_name")
 
 
 

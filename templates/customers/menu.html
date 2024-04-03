@@ -123,7 +123,7 @@
             const itemPrice = parseFloat(
               document
                 .querySelector(`[id^='order-count-${itemId}']`)
-                .parentNode.querySelector("p:nth-child(3)")
+                .parentNode.parentNode.querySelector("p:nth-child(3)")
                 .textContent.split(": ")[1]
             );
             orderedItems.push({
@@ -134,7 +134,6 @@
             });
           }
         }
-
         if (orderedItems.length > 0) {
           const redirectUrl = `{{ url_for('ordersummary') }}?rest_id=${restId}&payment_method=${paymentMethod}&payment_status=Successful&ordered_items=${encodeURIComponent(
             JSON.stringify(orderedItems)

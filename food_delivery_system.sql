@@ -154,21 +154,14 @@ CREATE TABLE Orders (
 
 INSERT INTO Orders (order_id, customer_id, Payment_id, order_status, amount)
 VALUES
-(1, 1, 1, 'Delivered', 50.00),
-(2, 2, 2, 'Processing', 30.50),
-(3, 3, 3, 'Pending', 25.75),
-(4, 4, 4, 'Delivered', 40.00),
-(5, 5, 5, 'Processing', 55.25),
-(6, 6, 6, 'Pending', 70.00),
-(7, 7, 7, 'Delivered', 20.00),
-(8, 8, 8, 'Processing', 45.50),
-(9, 9, 9, 'Pending', 35.75),
-(10, 10, 10, 'Delivered', 60.25),
-(11, 11, 11, 'Processing', 80.00),
-(12, 12, 12, 'Pending', 55.50),
-(13, 13, 13, 'Delivered', 15.75),
-(14, 14, 14, 'Processing', 30.00),
-(15, 15, 15, 'Pending', 65.25);
+(1, 1, 1, 'Delivered', 850.00),
+(2, 2, 2, 'Processing', 1440.00),
+(3, 3, 3, 'Pending', 540.00),
+(4, 4, 4, 'Delivered', 400.00),
+(5, 5, 5, 'Processing', 500.00),
+(6, 6, 6, 'Pending', 620.00),
+(7, 7, 7, 'Delivered', 920.00),
+(8, 8, 8, 'Processing', 300.00),
 
 DROP TABLE IF EXISTS Delivery_Agent;
 

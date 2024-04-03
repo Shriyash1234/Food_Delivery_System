@@ -1,0 +1,22 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant details</title>
+    <link rel="stylesheet" href="../../static//CSS/restaurantdetails.css">
+</head>
+<body>
+    <div class="row">
+        {% for restaurant in restaurant_details %}
+          <div class="col-sm-6 col-md-4 col-lg-3">
+              <div class="restaurant-card">
+                <h5 class="card-title">{{ restaurant.restaurant_name }}</h5>
+                <p class="card-text">Cuisine: {{ restaurant.cuisine_type }}</p>
+                <p class="card-text">Rating: {{ restaurant.rating }}</p>
+                <p class="card-text">Contact_details: {{ restaurant.contact_details }}</p>
+              </div>
+          </div>
+        {% endfor %}
+      </div>
+</body>
+</html>

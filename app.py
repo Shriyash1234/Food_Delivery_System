@@ -60,7 +60,7 @@ def login():
             if account:
                 session['agentbool'] = True
                 session['cutomerbool'], session['restbool'] = False, False
-                session['agent_ID'] = account['agent_ID']
+                session['agent_ID'] = account['agent_id']
                 msg = 'Logged in successfully !'
                 flask.flash(msg)
                 return redirect(url_for('index'))
@@ -263,6 +263,33 @@ def restaurant_menu(restaurant_id, cuisine_type):
 
     return render_template("/customers/menu.html",food_items=food_items,restaurant_name=restaurant_name)
 
+@app.route('/restaurant/<restaurant_id>')
+def restaurant_details(restaurant_id):
+    cur = mysql.connection.cursor()
+
+
+    cur.execute('''
+    SELECT *
+    from restaurant
+    WHERE restaurant.restaurant_id = %s
+    ''', (restaurant_id))
+    restaurant_details_data = cur.fetchall()
+    restaurant_details_columns = [col[0] for col in cur.description]
+    restaurant_details = [dict(zip(restaurant_details_columns, row)) for row in restaurant_details_data]
+
+    cur.execute('''
+    SELECT *
+    from restaurant
+    WHERE restaurant.restaurant_id = %s
+    ''', (restaurant_id))
+    restaurant_details_data = cur.fetchall()
+    restaurant_details_columns = [col[0] for col in cur.description]
+    restaurant_details = [dict(zip(restaurant_details_columns, row)) for row in restaurant_details_data]
+
+    # print(food_items)
+
+    return render_template("/restaurants/details.html",restaurant_details=restaurant_details)
+
 @app.route('/userdetails')
 # should contain some details of the user like account details, address, and orders made by the user
 def userdetails():
@@ -365,6 +392,53 @@ def ordersummary():
     # flash("Order successfully submitted.")
     return render_template('customers/ordersummary.html', total_price=amount, items=ordered_items, rest_name="rest_name")
 
+@app.route('/delivery_dashboard', methods=['GET', 'POST'])
+def index_deliveryagent():
+    agent_id = session.get('agent_ID')
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM Delivery WHERE agent_id = %s", (agent_id,))
+    delivery_data = cur.fetchall()
+    # cur.execute()
+
+    # cur.execute("SELECT * FROM Delivery_Agent WHERE agent_id = %s", (agent_id,))
+    # agent_data = cur.fetchall()
+    # print(agent_data)
+    delivery_data_columns = [col[0] for col in cur.description]
+    delivery = [dict(zip(delivery_data_columns, row)) for row in delivery_data]
+    for delivery_item in delivery:
+        # Fetch customer address
+        customer_id = delivery_item['customer_id']
+        cur.execute("SELECT a.building_name, a.street, a.pin_code, a.city, a.state FROM Customer_Address ca JOIN Address a ON ca.address_id = a.address_id WHERE ca.customer_id = %s", (customer_id,))
+        customer_address_data = cur.fetchone()
+        if customer_address_data:
+            customer_address = {
+                'building_name': customer_address_data[0],
+                'street': customer_address_data[1],
+                'pin_code': customer_address_data[2],
+                'city': customer_address_data[3],
+                'state': customer_address_data[4]
+            }
+        else:
+            customer_address = None
+        delivery_item['customer_address'] = customer_address
+        
+        # Fetch restaurant details
+        restaurant_id = delivery_item['restaurant_id']
+        cur.execute("SELECT a.building_name, a.street, a.pin_code, a.city, a.state FROM restaurant_address r JOIN Address a ON r.address_id = a.address_id WHERE r.restaurant_id = %s", (restaurant_id,))
+        restaurant_address_data = cur.fetchone()
+        if restaurant_address_data:
+            restaurant_address = {
+                'building_name': restaurant_address_data[0],
+                'street': restaurant_address_data[1],
+                'pin_code': restaurant_address_data[2],
+                'city': restaurant_address_data[3],
+                'state': restaurant_address_data[4]
+            }
+        else:
+            restaurant_address = None
+        delivery_item['restaurant_address'] = restaurant_address
+        
+    return delivery
 
 
 if __name__ == '__main__':

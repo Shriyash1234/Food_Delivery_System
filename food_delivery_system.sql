@@ -155,13 +155,21 @@ CREATE TABLE Orders (
 INSERT INTO Orders (order_id, customer_id, Payment_id, order_status, amount)
 VALUES
 (1, 1, 1, 'Delivered', 850.00),
-(2, 2, 2, 'Processing', 1440.00),
-(3, 3, 3, 'Pending', 540.00),
+(2, 2, 2, 'Delivered', 1440.00),
+(3, 3, 3, 'Delivered', 540.00),
 (4, 4, 4, 'Delivered', 400.00),
-(5, 5, 5, 'Processing', 500.00),
-(6, 6, 6, 'Pending', 620.00),
+(5, 5, 5, 'Delivered', 500.00),
+(6, 6, 6, 'Delivered', 620.00),
 (7, 7, 7, 'Delivered', 920.00),
-(8, 8, 8, 'Processing', 300.00);
+(8, 8, 8, 'Delivered', 300.00);
+(9, 9, 9, 'Delivered', 300.00);
+(10, 10, 10, 'Delivered', 300.00);
+(11, 11, 11, 'Delivered', 300.00);
+(12, 12, 12, 'Delivered', 300.00);
+(13, 13, 13, 'Delivered', 300.00);
+(14, 14, 14, 'Delivered', 300.00);
+(15, 15, 15, 'Processing', 300.00);
+
 
 DROP TABLE IF EXISTS Delivery_Agent;
 
@@ -206,6 +214,8 @@ DROP TABLE IF EXISTS Delivery;
 CREATE TABLE Delivery (
   order_id int(8) NOT NULL,
   agent_id int(8) NOT NULL,
+  customer_id int(8) NOT NULL,
+  restaurant_id int(8) NOT NUll,
   delivery_review varchar(50) DEFAULT NULL,
   delivery_rating int(8) DEFAULT NULL,
   delivery_charges decimal(10,2) NOT NULL,
@@ -221,17 +231,23 @@ CREATE TABLE Delivery (
 );
 
 
-INSERT INTO Delivery (order_id, agent_id, delivery_review, delivery_rating, delivery_charges, pickup_time, delivery_time, delivery_status, tip)
+INSERT INTO Delivery (order_id, agent_id, customer_id, restaurant_id, delivery_review, delivery_rating, delivery_charges, pickup_time, delivery_time, delivery_status, tip)
 VALUES
-(1, 1, 'Good service', 4, 5.00, '2024-02-14 12:00:00', '2024-02-14 12:30:00', 'Delivered', 2.50),
-(2, 2, 'Prompt delivery', 5, 4.50, '2024-02-14 13:15:00', '2024-02-14 13:45:00', 'Delivered', 3.00),
-(3, 3, 'Excellent service', 3, 6.00, '2024-02-14 11:45:00', '2024-02-14 12:15:00', 'Delivered', 4.00),
-(4, 4, 'Very fast delivery', 4, 7.00, '2024-02-14 14:30:00', '2024-02-14 15:00:00', 'Delivered', 3.50),
-(5, 5, 'Friendly delivery person', 5, 5.50, '2024-02-14 16:00:00', '2024-02-14 16:30:00', 'Delivered', 2.00),
-(6, 6, 'Great experience', 2, 6.50, '2024-02-14 17:15:00', '2024-02-14 17:45:00', 'Delivered', 3.00),
-(7, 7, 'Polite and efficient', 4, 7.50, '2024-02-14 18:30:00', '2024-02-14 19:00:00', 'Delivered', 2.50),
-(8, 8, 'Satisfactory service', 1, 5.50, '2024-02-14 20:00:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
-
+(1, 1, 1,1,'Good service', 4, 5.00, '2024-02-14 12:00:00', '2024-02-14 12:30:00', 'Delivered', 2.50),
+(2, 2, 2,2,'Prompt delivery', 5, 4.50, '2024-02-14 13:15:00', '2024-02-14 13:45:00', 'Delivered', 3.00),
+(3, 3, 3,3,'Excellent service', 3, 6.00, '2024-02-14 11:45:00', '2024-02-14 12:15:00', 'Delivered', 4.00),
+(4, 4, 4,4,'Very fast delivery', 4, 7.00, '2024-02-14 14:30:00', '2024-02-14 15:00:00', 'Delivered', 3.50),
+(5, 5, 5,5,'Friendly delivery person', 5, 5.50, '2024-02-14 16:00:00', '2024-02-14 16:30:00', 'Delivered', 2.00),
+(6, 6, 6,6,'Great experience', 2, 6.50, '2024-02-14 17:15:00', '2024-02-14 17:45:00', 'Delivered', 3.00),
+(7, 7, 7,7,'Polite and efficient', 4, 7.50, '2024-02-14 18:30:00', '2024-02-14 19:00:00', 'Delivered', 2.50),
+(8, 8, 8,8,'Satisfactory service', 1, 5.50, '2024-02-14 20:00:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
+(9,9,9,9,'Satisfactory service', 1, 6.00, '2024-02-14 21:00:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
+(10, 10, 10,10,'Satisfactory service', 2, 8.00, '2024-02-14 20:30:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
+(11, 11,11,11,'Satisfactory service', 3, 7.50, '2024-02-14 21:30:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
+(12, 12, 12,12,'Satisfactory service', 4, 8.50, '2024-02-14 19:30:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
+(13,13, 13,13,'Satisfactory service', 5, 9.50, '2024-02-14 21:20:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
+(14, 14, 14,14,'Satisfactory service', 3, 8.00, '2024-02-14 20:10:00', '2024-02-14 20:30:00', 'Delivered', 3.50);
+(15, 15, 15,15,'Satisfactory service', 4, 7.00, '2024-02-14 23:10:00', '2024-02-14 20:30:00', 'Placed', 3.50);
 
 DROP TABLE IF EXISTS Restaurant;
 

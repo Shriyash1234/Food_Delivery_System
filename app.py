@@ -13,7 +13,7 @@ app = Flask(__name__,static_url_path="/static")
 app.secret_key = 'Top_secret'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'shriyash123'
+app.config['MYSQL_PASSWORD'] = 'sriroot'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 # try:

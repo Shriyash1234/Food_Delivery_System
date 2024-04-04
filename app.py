@@ -64,7 +64,7 @@ def login():
                 session['agent_ID'] = account['agent_id']
                 msg = 'Logged in successfully !'
                 flask.flash(msg)
-                return redirect(url_for('index'))
+                return redirect(url_for('index_deliveryagent'))
             else:
                 time.sleep(2)
                 msg = 'Incorrect username / password !'
@@ -447,8 +447,15 @@ def index_deliveryagent():
         else:
             restaurant_address = None
         delivery_item['restaurant_address'] = restaurant_address
-        
-    return delivery
+
+        agent_id = session.get('agent_ID')
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM Delivery_Agent WHERE agent_id = %s", (agent_id,))
+        agent_data = cur.fetchall()
+        # print(agent_data)
+        agent_columns = [col[0] for col in cur.description]
+        agent = [dict(zip(agent_columns, row)) for row in agent_data][0] 
+    return render_template('delivery/index.html', delivery=delivery, agent = agent)
 
 @app.route('/aboutus')
 def aboutus():

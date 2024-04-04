@@ -1,35 +1,63 @@
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Restaurant details</title>
-    <link rel="stylesheet" href="../../static/CSS/restaurantdetails.css" />
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Details</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-      .menu-item {
-        margin-bottom: 30px;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      th,
-      td {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
-      }
-      th {
-        background-color: #f2f2f2;
-      }
-      .btn-back {
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin-top: 20px;
+        }
+        .restaurant-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .restaurant-card h2 {
+            color: #007bff;
+        }
+        table {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        th {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+        }
+        .menu-item {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .menu-item:hover {
+            transform: translateY(-5px);
+        }
+        .img-fluid {
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .btn-primary, .btn-danger {
+            margin-top: 10px;
+        }
+        .container {
+            margin-bottom: 50px;
+        }
+        .btn-back {
         background-color: #555; /* Dark grey color */
         color: #fff; /* White text color */
         padding: 10px 20px; /* Adjust padding as needed */
@@ -39,76 +67,69 @@
         display: inline-block; /* Ensure proper button display */
         margin-top: 40px;
         margin-left: 20px;
-    }
+        }
     </style>
-  </head>
-  <body>
-    <a href="http://127.0.0.1:5000" class="btn-back">Log Out</a>
-
+</head>
+<body>
+  <a href="http://127.0.0.1:5000" class="btn-back">Log Out</a>
     <div class="container">
-      <div class="restaurant-card">
-        <h2>{{ restaurant_details.restaurant_name }}</h2>
-        <p class="card-text">Cuisine: {{ restaurant_details.cuisine_type }}</p>
-        <p class="card-text">Rating: {{ restaurant_details.rating }}</p>
-        <p class="card-text">
-          Contact_details: {{ restaurant_details.contact_details }}
-        </p>
-      </div>
-
-      <h2>Orders</h2>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Item Names</th>
-            <th>Item Quantities</th>
-            <th>Notes</th>
-            <th>Order Status</th>
-            <th>Placed Time</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for order in order_details %}
-          <tr>
-            <td>{{ order.order_id }}</td>
-            <td>{{ order.item_names }}</td>
-            <td>{{ order.item_quantities }}</td>
-            <td>{{ order.notes }}</td>
-            <td>{{ order.order_status }}</td>
-            <td>{{ order.placed_time }}</td>
-            <td>{{ order.amount }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      <h2 style="margin-top: 30px;">Menu</h2>
-      <div style="margin-top: 20px !important;" class="my-5">
-      <div class="container my-5">
-        <a href="{{ url_for('add_item') }}" type="button" class="btn btn-primary">Add Item</a>
-        <div class="row">
-          {% for food in menu %}
-          <div class="col-md-6 col-lg-4">
-            <div class="menu-item">
-              <img src="{{ food.item_image }}" class="img-fluid mb-3" />
-              <h5>{{ food.item_name }}</h5>
-              <p>Price: {{ food.item_price }}</p>
-              <p>Rating: {{ food.item_rating }}</p>
-              <p>Type: {{ food.item_type }}</p>
-              <p>Orders: {{ food.order_count }}</p>
-              <p>Availability: {{ food.availability }}</p>
-              <p>Vegetarian: {{ food.vegetarian }}</p>
-              <a href="{{ url_for('edit_menu', item_id=food.item_id) }}">
-                <button type="button" class="btn btn-primary">Edit Menu</button>
-              </a>
-              <a href="{{ url_for('delete_item', item_id=food.item_id) }}">
-                <button type="button" class="btn btn-danger">Delete</button>
-              </a>
-            </div>
-          </div>
-          {% endfor %}
+        <div class="restaurant-card">
+            <h2>{{ restaurant_details.restaurant_name }}</h2>
+            <p class="card-text">Cuisine: {{ restaurant_details.cuisine_type }}</p>
+            <p class="card-text">Rating: {{ restaurant_details.rating }}</p>
+            <p class="card-text">Contact details: {{ restaurant_details.contact_details }}</p>
         </div>
-      </div>
+
+        <h2>Orders</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Item Names</th>
+                    <th>Item Quantities</th>
+                    <th>Notes</th>
+                    <th>Order Status</th>
+                    <th>Placed Time</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in order_details %}
+                <tr>
+                    <td>{{ order.order_id }}</td>
+                    <td>{{ order.item_names }}</td>
+                    <td>{{ order.item_quantities }}</td>
+                    <td>{{ order.notes }}</td>
+                    <td>{{ order.order_status }}</td>
+                    <td>{{ order.placed_time }}</td>
+                    <td>{{ order.amount }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="my-5">
+            <h2>Menu</h2>
+            <a href="{{ url_for('add_item') }}" class="btn btn-primary">Add Item</a>
+            <div class="row">
+                {% for food in menu %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-item">
+                        <img src="{{ food.item_image }}" class="img-fluid" alt="Food Item">
+                        <h5>{{ food.item_name }}</h5>
+                        <p>Price: {{ food.item_price }}</p>
+                        <p>Rating: {{ food.item_rating }}</p>
+                        <p>Type: {{ food.item_type }}</p>
+                        <p>Orders: {{ food.order_count }}</p>
+                        <p>Availability: {{ food.availability }}</p>
+                        <p>Vegetarian: {{ food.vegetarian }}</p>
+                        <a href="{{ url_for('edit_menu', item_id=food.item_id) }}" class="btn btn-primary">Edit Menu</a>
+                        <a href="{{ url_for('delete_item', item_id=food.item_id) }}" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-  </body>
+</body>
 </html>

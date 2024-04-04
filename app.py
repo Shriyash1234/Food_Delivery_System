@@ -75,10 +75,10 @@ def login():
             if account:
                 session['restbool'] = True
                 session['agentbool'], session['customerbool'] = False, False
-                session['restaurant_ID'] = account['restaurant_ID']
+                session['restaurant_ID'] = account['restaurant_id']
                 msg = 'Logged in successfully !'
                 flask.flash(msg)
-                return redirect(url_for('index'))
+                return redirect(url_for('restaurant_details'))
             else:
                 time.sleep(2)
                 msg = 'Incorrect username / password !'
@@ -227,6 +227,18 @@ def index():
 
     return render_template("/customers/index.html", users=users, cuisines=cuisines)
 
+def fetch_food_item_from_database(item_id):
+    cur = mysql.connection.cursor()
+    cur.execute('''
+        SELECT *
+        FROM food_item
+        WHERE item_id = %s
+    ''', (item_id,))
+    food_item_data = cur.fetchall()
+    food_item_columns = [col[0] for col in cur.description]
+    food_items = [dict(zip(food_item_columns, row)) for row in food_item_data]
+    return food_items
+
 @app.route('/restaurants/<cuisine_type>')
 def restaurants_by_cuisine(cuisine_type):
     cur = mysql.connection.cursor()
@@ -264,32 +276,81 @@ def restaurant_menu(restaurant_id, cuisine_type):
 
     return render_template("/customers/menu.html",food_items=food_items,restaurant_name=restaurant_name)
 
-@app.route('/restaurant/<restaurant_id>')
-def restaurant_details(restaurant_id):
+@app.route('/restaurant')
+def restaurant_details():
     cur = mysql.connection.cursor()
+    restaurant_id = session["restaurant_ID"]
+    # Fetch restaurant details
+    cur.execute('''
+    SELECT *
+    FROM restaurant
+    WHERE restaurant_id = %s
+    ''', (restaurant_id,))
+    restaurant_details_data = cur.fetchone()
+    restaurant_details_columns = [col[0] for col in cur.description]
+    restaurant_details = dict(zip(restaurant_details_columns, restaurant_details_data))
 
+    # Fetch order details
+    cur.execute('''
+    SELECT
+       o.order_id,
+       GROUP_CONCAT(oi.item_quantity) AS item_quantities,
+       GROUP_CONCAT(oi.notes) AS notes,
+       GROUP_CONCAT(fi.item_name) AS item_names,
+       SUM(fi.item_price) AS total_price,
+       AVG(fi.item_rating) AS avg_food_rating,
+       o.order_status,
+       o.placed_time,
+       o.amount
+    FROM orders o
+    JOIN ordered_items oi ON o.order_id = oi.order_id
+    JOIN food_item fi ON oi.item_id = fi.item_id
+    WHERE fi.restaurant_id = %s
+    GROUP BY o.order_id;
+    ''', (restaurant_id,))
+    order_details_data = cur.fetchall()
+    order_details_columns = [col[0] for col in cur.description]
+    order_details = [dict(zip(order_details_columns, row)) for row in order_details_data]
+    
 
     cur.execute('''
     SELECT *
-    from restaurant
+    FROM food_item 
+    JOIN restaurant ON food_item.restaurant_id = restaurant.restaurant_id 
     WHERE restaurant.restaurant_id = %s
-    ''', (restaurant_id))
-    restaurant_details_data = cur.fetchall()
-    restaurant_details_columns = [col[0] for col in cur.description]
-    restaurant_details = [dict(zip(restaurant_details_columns, row)) for row in restaurant_details_data]
+    ''', (restaurant_id,))
+    food_item_data = cur.fetchall()
+    food_item_columns = [col[0] for col in cur.description]
+    food_items = [dict(zip(food_item_columns, row)) for row in food_item_data]
 
-    cur.execute('''
-    SELECT *
-    from restaurant
-    WHERE restaurant.restaurant_id = %s
-    ''', (restaurant_id))
-    restaurant_details_data = cur.fetchall()
-    restaurant_details_columns = [col[0] for col in cur.description]
-    restaurant_details = [dict(zip(restaurant_details_columns, row)) for row in restaurant_details_data]
+    
+    return render_template("/restaurants/details.html", restaurant_details=restaurant_details, order_details=order_details,menu=food_items)
 
-    # print(food_items)
-
-    return render_template("/restaurants/details.html",restaurant_details=restaurant_details)
+@app.route('/restaurant/editmenu/<item_id>', methods=['GET', 'POST'])
+def edit_menu(item_id):
+    if request.method == 'POST':
+        # Fetch form data
+        new_item_name = request.form['item_name']
+        new_item_price = float(request.form['item_price'])
+        new_item_type = request.form['item_type']
+        new_vegetarian = True if request.form.get('vegetarian') else False
+        new_availability = True if request.form.get('availability') else False
+        
+        # Update food item details in the database
+        cur = mysql.connection.cursor()
+        cur.execute('''
+            UPDATE food_item
+            SET item_name = %s, item_price = %s, item_type = %s, vegetarian = %s, availability = %s
+            WHERE item_id = %s
+        ''', (new_item_name, new_item_price, new_item_type, new_vegetarian, new_availability, item_id))
+        mysql.connection.commit()
+        
+        # Redirect the user back to the menu page after editing
+        return redirect(url_for('restaurant_details'))  # Assuming 'menu' is the route for displaying the menu
+    else:
+        # Fetch the details of the food item with the given item_id from the database
+        food_item = fetch_food_item_from_database(item_id)
+        return render_template('restaurants/edit_menu.html', food_item=food_item)
 
 @app.route('/userdetails')
 # should contain some details of the user like account details, address, and orders made by the user
@@ -381,7 +442,9 @@ def ordersummary():
     cursor.execute('select max(payment_id) from Payment;')
     payment_ID = cursor.fetchone()
     payment_ID = str(int(payment_ID[0]) + 1)
-    agent_id = random.randint(1, 15)
+    cursor.execute('select max(agent_id) from delivery_agent')
+    num_delivery_agents = cursor.fetchone()
+    agent_id = random.randint(1, int(num_delivery_agents[0]))
     cursor.execute('insert into payment (payment_id, payment_method, payment_status, amount, time) values (%s, %s, %s, %s, %s);', (payment_ID, payment_method, payment_status, amount, placed_time))
     cursor.execute('insert into orders (order_id, customer_id,restaurant_id, payment_id, order_status, placed_time, amount) values (%s, %s,%s, %s, %s, %s, %s);', (order_ID, customer_id,rest_id, payment_ID, order_status, placed_time, amount))
     cursor.execute('insert into delivery (order_id, agent_id,customer_id, restaurant_id, delivery_review, delivery_rating, delivery_charges, pickup_time, delivery_time, delivery_status,tip) values (%s, %s,%s, %s, %s, %s, %s,%s, %s,%s, %s);', (order_ID,agent_id, customer_id,rest_id, "", random.randint(1, 5), random.randint(1, 9),datetime.now(),datetime.now()+timedelta(minutes=30),"Placed",random.randint(1, 5)))

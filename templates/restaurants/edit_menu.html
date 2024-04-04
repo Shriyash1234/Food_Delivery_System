@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Menu Item</title>
+</head>
+<body>
+    <h1>Edit Menu Item</h1>
+    <form action="" method="POST">
+        {% for food in food_item %}
+        <label for="item_name">Item Name:</label>
+        <input type="text" id="item_name" name="item_name" value="{{ food.item_name }}" required><br><br>
+        <label for="item_price">Item Price:</label>
+        <input type="number" id="item_price" name="item_price" value="{{ food.item_price }}" required><br><br>
+        
+        <label for="item_type">Item Type:</label>
+        <input type="text" id="item_type" name="item_type" value="{{ food.item_type }}" required><br><br>
+        
+        <label for="vegetarian">Vegetarian:</label>
+        <input type="checkbox" id="vegetarian" name="vegetarian" {% if food.vegetarian %}checked{% endif %}><br><br>
+        
+        <label for="availability">Availability:</label>
+        <input type="checkbox" id="availability" name="availability" {% if food.availability %}checked{% endif %}><br><br>
+        
+        <input type="submit" value="Submit">
+        {% endfor %}
+    </form>
+</body>
+</html>

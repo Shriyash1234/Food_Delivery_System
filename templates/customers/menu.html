@@ -29,11 +29,6 @@
         {% for food in food_items %}
         <div class="col-md-6 col-lg-4">
           <div class="menu-item">
-            <img
-              src="{{ food.item_image }}"
-              class="img-fluid mb-3"
-              alt="{{ food.item_name }}"
-            />
             <h5>{{ food.item_name }}</h5>
             <p>Price: {{ food.item_price }}</p>
             <p>Rating: {{ food.item_rating }}</p>

@@ -13,7 +13,7 @@ app = Flask(__name__,static_url_path="/static")
 app.secret_key = 'Top_secret'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'shriyash123'
+app.config['MYSQL_PASSWORD'] = 'Enter your password'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 # try:
@@ -500,7 +500,7 @@ def ordersummary():
     # rest_name = cursor.fetchone()[0]
     cursor.close()
     # flash("Order successfully submitted.")
-    return render_template('customers/ordersummary.html', total_price=amount, items=ordered_items, rest_name="rest_name")
+    return redirect(url_for('userdetails'))
 
 @app.route('/delivery_dashboard', methods=['GET', 'POST'])
 def index_deliveryagent():
@@ -508,11 +508,6 @@ def index_deliveryagent():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM Delivery WHERE agent_id = %s", (agent_id,))
     delivery_data = cur.fetchall()
-    # cur.execute()
-
-    # cur.execute("SELECT * FROM Delivery_Agent WHERE agent_id = %s", (agent_id,))
-    # agent_data = cur.fetchall()
-    # print(agent_data)
     delivery_data_columns = [col[0] for col in cur.description]
     delivery = [dict(zip(delivery_data_columns, row)) for row in delivery_data]
     for delivery_item in delivery:

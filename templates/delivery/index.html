@@ -17,7 +17,6 @@
             <th>Email</th>
             <th>Location</th>
             <th>Availability</th>
-            <th>Password</th>
         </tr>
         <tr>
             <td>{{ agent.agent_id }}</td>
@@ -28,7 +27,6 @@
             <td>{{ agent.email }}</td>
             <td>{{ agent.location }}</td>
             <td>{{ agent.availability }}</td>
-            <td>{{ agent.password }}</td>
         </tr>
     </table>
     <h1>Orders</h1>
@@ -53,7 +51,11 @@
             <td>{{ delivery.pickup_time }}</td>
             <td>{{ delivery.delivery_time }}</td>
             <td>{{ delivery.delivery_status }}</td>
-            <td>{{ delivery.delivery_rating }}</td>
+            {% if delivery.delivery_status == "On the way" %}
+                <td>NA</td>
+            {% else %}
+                <td>{{ delivery.delivery_rating }}</td>
+            {% endif %}
             <td>{{ delivery.delivery_review }}</td>
 
         </tr>

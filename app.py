@@ -515,10 +515,10 @@ def index_deliveryagent():
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM Delivery_Agent WHERE agent_id = %s", (agent_id,))
         agent_data = cur.fetchall()
-        # print(agent_data)
         agent_columns = [col[0] for col in cur.description]
         agent = [dict(zip(agent_columns, row)) for row in agent_data][0] 
     return render_template('delivery/index.html', delivery=delivery, agent = agent)
+    # return render_template('delivery/index.html', delivery=delivery)
 
 @app.route('/aboutus')
 def aboutus():

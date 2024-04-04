@@ -457,6 +457,11 @@ def index_deliveryagent():
         agent = [dict(zip(agent_columns, row)) for row in agent_data][0] 
     return render_template('delivery/index.html', delivery=delivery, agent = agent)
 
+@app.route('/aboutus')
+def aboutus():
+    # You can render the aboutus.html template here
+    return render_template('aboutus.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

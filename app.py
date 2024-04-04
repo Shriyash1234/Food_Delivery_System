@@ -259,7 +259,7 @@ def restaurant_menu(restaurant_id, cuisine_type):
     FROM food_item 
     JOIN restaurant ON food_item.restaurant_id = restaurant.restaurant_id 
     WHERE restaurant.restaurant_id = %s
-    ''', (restaurant_id))
+    ''', (restaurant_id,))
     food_item_data = cur.fetchall()
     food_item_columns = [col[0] for col in cur.description]
     food_items = [dict(zip(food_item_columns, row)) for row in food_item_data]
@@ -268,7 +268,7 @@ def restaurant_menu(restaurant_id, cuisine_type):
     SELECT restaurant_name
     from restaurant
     WHERE restaurant.restaurant_id = %s
-    ''', (restaurant_id))
+    ''', (restaurant_id,))
     restaurant_name_data = cur.fetchall()
     restaurant_name_columns = [col[0] for col in cur.description]
     restaurant_name = [dict(zip(restaurant_name_columns, row)) for row in restaurant_name_data]

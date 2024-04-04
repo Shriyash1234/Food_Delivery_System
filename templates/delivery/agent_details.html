@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Details</title>
+    <link rel="stylesheet" href="../static/CSS/userdetails.css" />
+</head>
+<body>
+    <h1>User Details</h1>
+    <h2>Account Details</h2>
+    <a href="http://127.0.0.1:5000/delivery_dashboard" class="btn-back">Back</a>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Vehichle Number</th>
+            <th>License ID</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th>Location</th>
+            <th>Availability</th>
+            <th>Password</th>
+        </tr>
+        <tr>
+            <td>{{ agent.agent_id }}</td>
+            <td>{{ agent.agent_name }}</td>
+            <td>{{ agent.vehicle_number }}</td>
+            <td>{{ agent.license_id }}</td>
+            <td>{{ agent.phone_num }}</td>
+            <td>{{ agent.email }}</td>
+            <td>{{ agent.location }}</td>
+            <td>{{ agent.availability }}</td>
+            <td>{{ agent.password }}</td>
+        </tr>
+</body>
+</html>

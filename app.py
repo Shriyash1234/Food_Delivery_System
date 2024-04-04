@@ -13,7 +13,7 @@ app = Flask(__name__,static_url_path="/static")
 app.secret_key = 'Top_secret'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'shriyash123'
+app.config['MYSQL_PASSWORD'] = 'gmailthegreat'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 # try:
@@ -64,7 +64,7 @@ def login():
                 session['agent_ID'] = account['agent_id']
                 msg = 'Logged in successfully !'
                 flask.flash(msg)
-                return redirect(url_for('index'))
+                return redirect(url_for('index_deliveryagent'))
             else:
                 time.sleep(2)
                 msg = 'Incorrect username / password !'
@@ -291,6 +291,18 @@ def restaurant_details(restaurant_id):
 
     return render_template("/restaurants/details.html",restaurant_details=restaurant_details)
 
+@app.route('/agentdetails')
+def agentdetails():
+    agent_id = session.get('agent_ID')
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM Delivery_Agent WHERE agent_id = %s", (agent_id,))
+    agent_data = cur.fetchall()
+    # print(agent_data)
+    agent_columns = [col[0] for col in cur.description]
+    agent = [dict(zip(agent_columns, row)) for row in agent_data][0]
+    # print(agent)
+    return render_template("/delivery/agent_details.html", agent=agent)
+
 @app.route('/userdetails')
 # should contain some details of the user like account details, address, and orders made by the user
 def userdetails():
@@ -447,8 +459,8 @@ def index_deliveryagent():
         else:
             restaurant_address = None
         delivery_item['restaurant_address'] = restaurant_address
-        
-    return delivery
+    print(delivery)
+    return render_template('delivery/index.html', delivery=delivery)
 
 
 if __name__ == '__main__':

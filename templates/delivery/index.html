@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order details</title>
+    <link rel="stylesheet" href="../static/CSS/userdetails.css" />
+</head>
+<body>
+    <h1>Orders</h1>
+    <header class="flex justify-center items-center">
+        <a href="{{ url_for('agentdetails') }}" class="user-profile-button">Profile</a>
+    </header>
+    <a href="http://127.0.0.1:5000/dashboard" class="btn-back">Back</a>
+
+    <table>
+        <tr>
+            <th>Order ID</th>
+            <th>Restaurant Address</th>
+            <th>Customer Address</th>
+            <th>Delivery Charges</th>
+            <th>Pickup Time</th>
+            <th>Delivery Time</th>
+            <th>Status</th>
+            <th>Rating</th>
+            <th>Review</th>
+        </tr>
+        {% for delivery in delivery %}
+        <tr>
+            <td>{{ delivery.order_id }}</td>
+            <td>{{ delivery.restaurant_address.building_name }}, {{ delivery.restaurant_address.street }}, {{ delivery.restaurant_address.city }}, {{ delivery.restaurant_address.state }} - {{ delivery.restaurant_address.pin_code }}</td>
+            <td>{{ delivery.customer_address.building_name }}, {{ delivery.customer_address.street }}, {{ delivery.customer_address.city }}, {{ delivery.customer_address.state }} - {{ delivery.customer_address.pin_code }}</td>
+            <td>{{ delivery.delivery_charges }}</td>
+            <td>{{ delivery.pickup_time }}</td>
+            <td>{{ delivery.delivery_time }}</td>
+            <td>{{ delivery.delivery_status }}</td>
+            <td>{{ delivery.delivery_rating }}/5</td>
+            <td>{{ delivery.delivery_review }}</td>
+
+        </tr>
+        <!-- {% endfor %} -->
+    </table>
+
+    <!-- <h2>Address</h2>
+
+    <table>
+        <tr>
+            <th>Building Name</th>
+            <th>Street</th>
+            <th>Pin Code</th>
+            <th>City</th>
+            <th>State</th>
+        </tr>
+        {% for _address in address %}
+        <tr>
+            <td>{{ _address.building_name }}</td>
+            <td>{{ _address.street }}</td>
+            <td>{{ _address.pin_code }}</td>
+            <td>{{ _address.city }}</td>
+            <td>{{ _address.state }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Orders</h2>
+    <table>
+        <tr>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Total Amount</th>
+            <th>Ordered items</th>
+        </tr>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.order_id }}</td>
+            <td>{{ order.placed_time.date() }}</td>
+            <td>{{ order.placed_time.time() }}</td>
+            <td>{{ order.amount }}</td>
+            <td>
+                <table>
+                    <tr>
+                        <th>Food Item</th>
+                        <th>Item Type</th>
+                        <th>Item Price</th>
+                        <th>Item Rating</th>
+                        <th> Count</th>
+                    </tr>
+                    {% for item in food_items %}
+                    <tr>
+                    {% if order.order_id == item.order_id %}
+                        <td>{{ item.food_item.item_name }}</td>
+                        <td>{{ item.food_item.item_type }}</td>
+                        <td>{{ item.food_item.item_price }}</td>
+                        <td>{{ item.food_item.item_rating }}</td>
+                        <td>{{ item.food_item.order_count }}</td>
+                    {% endif %}
+                    </tr>
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+        {% endfor %}
+    </table> -->
+</body>
+</html>

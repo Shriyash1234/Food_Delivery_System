@@ -13,7 +13,7 @@ We have developed a food delivery website that allows users to log in or sign up
   \
   4.4 ```Install all the required dependencies using pip commands as below:```
     \
-      &ensp;&ensp;&ensp;&ensp;4.4.1 ```pip install flask```
+      &ensp;&ensp;&ensp;&ensp;4.4.1 ```pip install Flask```
       \
       &ensp;&ensp;&ensp;&ensp;4.4.2```pip install flask-mysqldb```
       \

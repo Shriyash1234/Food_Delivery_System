@@ -29,9 +29,22 @@
       th {
         background-color: #f2f2f2;
       }
+      .btn-back {
+        background-color: #555; /* Dark grey color */
+        color: #fff; /* White text color */
+        padding: 10px 20px; /* Adjust padding as needed */
+        border: none; /* Remove default button border */
+        border-radius: 5px; /* Optional: Add rounded corners */
+        text-decoration: none; /* Remove default link underline */
+        display: inline-block; /* Ensure proper button display */
+        margin-top: 40px;
+        margin-left: 20px;
+    }
     </style>
   </head>
   <body>
+    <a href="http://127.0.0.1:5000" class="btn-back">Log Out</a>
+
     <div class="container">
       <div class="restaurant-card">
         <h2>{{ restaurant_details.restaurant_name }}</h2>
@@ -71,7 +84,6 @@
       </table>
       <h2 style="margin-top: 30px;">Menu</h2>
       <div style="margin-top: 20px !important;" class="my-5">
-      <h2>Menu</h2>
       <div class="container my-5">
         <a href="{{ url_for('add_item') }}" type="button" class="btn btn-primary">Add Item</a>
         <div class="row">

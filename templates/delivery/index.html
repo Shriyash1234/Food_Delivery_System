@@ -39,7 +39,7 @@
             <th>Customer Address</th>
             <th>Delivery Charges</th>
             <th>Pickup Time</th>
-            <th>Delivery Time</th>
+            <th>Delivery/ETA Time</th>
             <th>Status</th>
             <th>Rating</th>
             <th>Review</th>
@@ -53,11 +53,11 @@
             <td>{{ delivery.pickup_time }}</td>
             <td>{{ delivery.delivery_time }}</td>
             <td>{{ delivery.delivery_status }}</td>
-            <td>{{ delivery.delivery_rating }}/5</td>
+            <td>{{ delivery.delivery_rating }}</td>
             <td>{{ delivery.delivery_review }}</td>
 
         </tr>
-        <!-- {% endfor %} -->
+        {% endfor %}
     </table>
 
 

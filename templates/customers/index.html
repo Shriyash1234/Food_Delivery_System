@@ -1,76 +1,91 @@
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Foodie's Delight: Cuisine Options</title>
-  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f5f5f5;
-      font-family: 'Open Sans', sans-serif;
-    }
-    .cuisine-card {
-      background-color: #fff;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease-in-out;
-    }
-    .cuisine-card:hover {
-      transform: translateY(-2px);
-    }
-    .cuisine-image {
-      width: 100%;
-      height: 150px;  /* Adjust height if needed */
-      /* Choose one of the options below: */
-      /* Option 1: Use object-fit: contain */
-      object-fit: contain;  
-      /* Option 2: Adjust image dimensions beforehand */
-      /* ... */
-    }
-    .cuisine-name {
-      padding: 1rem;
-      text-align: center;
-      font-weight: bold;
-    }
-    /* Added style for header */
-    header {
-      background-color: orange-500;
-      color: black;
-      padding: 1rem;
-      text-align: center;
-      /* Adjust width if needed */
-      /* width: ... */
-    }
-    .header-text {
-      font-size: 1.5rem;  /* Adjust font size */
-    }
-    /* Added style for user profile button */
-    .user-profile-button {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background-color: #4f46e5;
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <header class="flex justify-center items-center">
-    <h1 class="header-text text-blue  font-bold">Foodie's Delight</h1>
-    <a href="{{ url_for('userdetails') }}" class="user-profile-button">User Profile</a>
-  </header>
-  <h2 class="text-3xl font-bold text-center my-4">Explore Cuisines From Around India </h2>
-  <ul class="grid grid-cols-1 md:grid-cols-3 gap-4 px-4">
-    {% for cuisine in cuisines %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foodie's Delight: Cuisine Options</title>
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f5f5f5;
+        font-family: "Open Sans", sans-serif;
+      }
+      .cuisine-card {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+      .cuisine-card:hover {
+        transform: translateY(-2px);
+      }
+      .cuisine-image {
+        width: 100%;
+        height: 150px; /* Adjust height if needed */
+        /* Choose one of the options below: */
+        /* Option 1: Use object-fit: contain */
+        object-fit: contain;
+        /* Option 2: Adjust image dimensions beforehand */
+        /* ... */
+      }
+      .cuisine-name {
+        padding: 1rem;
+        text-align: center;
+        font-weight: bold;
+      }
+      /* Added style for header */
+      header {
+        background-color: orange-500;
+        color: black;
+        padding: 1rem;
+        text-align: center;
+        /* Adjust width if needed */
+        /* width: ... */
+      }
+      .header-text {
+        font-size: 1.5rem; /* Adjust font size */
+      }
+      /* Added style for user profile button */
+      .user-profile-button {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background-color: #4f46e5;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="flex justify-center items-center">
+      <h1 class="header-text text-blue font-bold">Foodie's Delight</h1>
+      <a href="{{ url_for('userdetails') }}" class="user-profile-button"
+        >User Profile</a
+      >
+    </header>
+    <h2 class="text-3xl font-bold text-center my-4">
+      Explore Cuisines From Around India
+    </h2>
+    <ul class="grid grid-cols-1 md:grid-cols-3 gap-4 px-4">
+      {% for cuisine in cuisines %}
       <li class="cuisine-card hover:bg-gray-100">
-        <a href="{{ url_for('restaurants_by_cuisine', cuisine_type=cuisine.cuisine_type) }}" class="flex flex-col items-center justify-center">
-          <img src="{{ url_for('static', filename='Assets/cuisines/' + cuisine.cuisine_type + '.jpg') }}" class="cuisine-image" alt="cuisine_img">
+        <a
+          href="{{ url_for('restaurants_by_cuisine', cuisine_type=cuisine.cuisine_type) }}"
+          class="flex flex-col items-center justify-center"
+        >
+          <img
+            src="{{ url_for('static', filename='Assets/cuisines/' + cuisine.cuisine_type + '.jpg') }}"
+            class="cuisine-image"
+            alt="cuisine_img"
+          />
           <p class="cuisine-name text-lg">{{ cuisine.cuisine_type }}</p>
         </a>
         {% endfor %}
+      </li>
     </ul>
   </body>
-  </html>
+</html>

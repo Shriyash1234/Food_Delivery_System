@@ -84,11 +84,12 @@ button:hover {
 
 .card {
   flex: 1;
-  padding: 40px;
+  padding: 20px;
   background-color: #fff;
   border-radius: 20px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
+  margin: 20px;
 }
 
 .card:hover {
@@ -117,4 +118,7 @@ button:hover {
 
 .card a:hover {
   background: linear-gradient(to right, #0062cc, #0056b3);
+}
+.sign-up-img{
+  width: 100px;
 }

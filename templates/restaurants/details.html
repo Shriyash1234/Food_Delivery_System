@@ -1,15 +1,15 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Restaurant details</title>
-    <link rel="stylesheet" href="../../static/CSS/restaurantdetails.css">
+    <link rel="stylesheet" href="../../static/CSS/restaurantdetails.css" />
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
     <style>
-       .menu-item {
+      .menu-item {
         margin-bottom: 30px;
         padding: 20px;
         border: 1px solid #ddd;
@@ -17,54 +17,57 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       }
       table {
-          width: 100%;
-          border-collapse: collapse;
+        width: 100%;
+        border-collapse: collapse;
       }
-      th, td {
-          border: 1px solid #dddddd;
-          text-align: left;
-          padding: 8px;
+      th,
+      td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
       }
       th {
-          background-color: #f2f2f2;
+        background-color: #f2f2f2;
       }
-  </style>
-</head>
-<body>
+    </style>
+  </head>
+  <body>
     <div class="container">
-        <div class="restaurant-card">
-          <h2 >{{ restaurant_details.restaurant_name }}</h2>
-          <p class="card-text">Cuisine: {{ restaurant_details.cuisine_type }}</p>
-          <p class="card-text">Rating: {{ restaurant_details.rating }}</p>
-          <p class="card-text">Contact_details: {{ restaurant_details.contact_details }}</p>
-        </div>
-        
-        <h2>Orders</h2>
-        <table border="1">
-          <thead>
-              <tr>
-                  <th>Order ID</th>
-                  <th>Item Names</th>
-                  <th>Item Quantities</th>
-                  <th>Notes</th>
-                  <th>Order Status</th>
-                  <th>Placed Time</th>
-                  <th>Amount</th>
-              </tr>
-          </thead>
-          <tbody>
-              {% for order in order_details %}
-              <tr>
-                  <td>{{ order.order_id }}</td>
-                  <td>{{ order.item_names }}</td>
-                  <td>{{ order.item_quantities }}</td>
-                  <td>{{ order.notes }}</td>
-                  <td>{{ order.order_status }}</td>
-                  <td>{{ order.placed_time }}</td>
-                  <td>{{ order.amount }}</td>
-              </tr>
-              {% endfor %}
-          </tbody>
+      <div class="restaurant-card">
+        <h2>{{ restaurant_details.restaurant_name }}</h2>
+        <p class="card-text">Cuisine: {{ restaurant_details.cuisine_type }}</p>
+        <p class="card-text">Rating: {{ restaurant_details.rating }}</p>
+        <p class="card-text">
+          Contact_details: {{ restaurant_details.contact_details }}
+        </p>
+      </div>
+
+      <h2>Orders</h2>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Item Names</th>
+            <th>Item Quantities</th>
+            <th>Notes</th>
+            <th>Order Status</th>
+            <th>Placed Time</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in order_details %}
+          <tr>
+            <td>{{ order.order_id }}</td>
+            <td>{{ order.item_names }}</td>
+            <td>{{ order.item_quantities }}</td>
+            <td>{{ order.notes }}</td>
+            <td>{{ order.order_status }}</td>
+            <td>{{ order.placed_time }}</td>
+            <td>{{ order.amount }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
       </table>
       <h2>Menu</h2>
       <div class="container my-5">
@@ -73,11 +76,7 @@
           {% for food in menu %}
           <div class="col-md-6 col-lg-4">
             <div class="menu-item">
-              <img
-                src="{{ food.item_image }}"
-                class="img-fluid mb-3"
-                alt="{{ food.item_name }}"
-              />
+              <img src="{{ food.item_image }}" class="img-fluid mb-3" />
               <h5>{{ food.item_name }}</h5>
               <p>Price: {{ food.item_price }}</p>
               <p>Rating: {{ food.item_rating }}</p>
@@ -97,5 +96,5 @@
         </div>
       </div>
     </div>
-</body>
+  </body>
 </html>

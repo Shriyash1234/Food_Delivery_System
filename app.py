@@ -325,6 +325,43 @@ def restaurant_details():
 
     
     return render_template("/restaurants/details.html", restaurant_details=restaurant_details, order_details=order_details,menu=food_items)
+@app.route('/restaurant/add_item', methods=['GET', 'POST'])
+def add_item():
+    if request.method == 'POST':
+        # Fetch form data
+        item_name = request.form['item_name']
+        item_price = float(request.form['item_price'])
+        item_type = request.form['item_type']
+        vegetarian = True if request.form.get('vegetarian') else False
+        availability = True if request.form.get('availability') else False
+        restaurant_id = session["restaurant_ID"]
+        cursor = mysql.connection.cursor()
+        cursor.execute('select max(item_id) from food_item;')
+        item_ID = cursor.fetchone()
+        item_ID = str(int(item_ID[0]) + 1)
+        # order_count = 0
+        # Insert food item details into the database
+        cur = mysql.connection.cursor()
+        cur.execute('''
+            INSERT INTO food_item (item_id,item_name, item_price, item_type, vegetarian, availability, restaurant_id)
+            VALUES (%s,%s, %s, %s, %s, %s, %s)
+        ''', (item_ID, item_name, item_price, item_type, vegetarian, availability, restaurant_id))
+        mysql.connection.commit()
+        
+        # Redirect the user back to the menu page after adding the new item
+        return redirect(url_for('restaurant_details'))
+    # return render_template('restaurants/details.html')
+    else:
+        return render_template('restaurants/add_item.html')
+@app.route('/delete_item/<item_id>')  
+def delete_item(item_id):
+    cur = mysql.connection.cursor()
+    cur.execute('''
+        DELETE FROM food_item
+        WHERE item_id = %s
+    ''', (item_id,))
+    mysql.connection.commit()
+    return redirect(url_for('restaurant_details'))
 
 @app.route('/restaurant/editmenu/<item_id>', methods=['GET', 'POST'])
 def edit_menu(item_id):

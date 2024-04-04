@@ -323,7 +323,7 @@ CREATE TABLE Food_Item (
   photo_url varchar(100) DEFAULT NULL,
   image blob default NULL,
   availability tinyint(1) NOT NULL,
-  order_count int(8) NOT NULL,
+  order_count int(8) NOT NULL DEFAULT 0,
   PRIMARY KEY (item_id),
   KEY restaurant_id (restaurant_id),
   CONSTRAINT Food_Item_ibfk_1 FOREIGN KEY (restaurant_id) REFERENCES Restaurant (restaurant_id) ON DELETE CASCADE

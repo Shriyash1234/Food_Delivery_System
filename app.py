@@ -450,6 +450,11 @@ def index_deliveryagent():
         
     return delivery
 
+@app.route('/aboutus')
+def aboutus():
+    # You can render the aboutus.html template here
+    return render_template('aboutus.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

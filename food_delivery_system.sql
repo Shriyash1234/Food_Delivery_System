@@ -235,10 +235,10 @@ CREATE TABLE Delivery (
 INSERT INTO Delivery (order_id, agent_id, customer_id, restaurant_id, delivery_review, delivery_rating, delivery_charges, pickup_time, delivery_time, delivery_status, tip)
 VALUES
 (1, 1, 1,1,'Good service', 4, 5.00, '2024-02-14 12:00:00', '2024-02-14 12:30:00', 'Delivered', 2.50),
-(2, 2, 2,2,'Prompt delivery', 5, 4.50, '2024-02-14 13:15:00', '2024-02-14 13:45:00', 'Delivered', 3.00),
-(3, 3, 3,3,'Excellent service', 3, 6.00, '2024-02-14 11:45:00', '2024-02-14 12:15:00', 'Delivered', 4.00),
-(4, 4, 4,4,'Very fast delivery', 4, 7.00, '2024-02-14 14:30:00', '2024-02-14 15:00:00', 'Delivered', 3.50),
-(5, 5, 5,5,'Friendly delivery person', 5, 5.50, '2024-02-14 16:00:00', '2024-02-14 16:30:00', 'Delivered', 2.00),
+(2, 1, 2,2,'Prompt delivery', 5, 4.50, '2024-02-14 13:15:00', '2024-02-14 13:45:00', 'Delivered', 3.00),
+(3, 1, 3,3,'Excellent service', 3, 6.00, '2024-02-14 11:45:00', '2024-02-14 12:15:00', 'Delivered', 4.00),
+(4, 1, 4,4,'N/A', 4, 7.00, '2024-02-14 14:30:00', '2024-02-14 15:00:00', 'On the way', 3.50),
+(5, 5, 5,5,'Friendly delivery person', 4, 5.50, '2024-02-14 16:00:00', '2024-02-14 16:30:00', 'Delivered', 2.00),
 (6, 6, 6,6,'Great experience', 2, 6.50, '2024-02-14 17:15:00', '2024-02-14 17:45:00', 'Delivered', 3.00),
 (7, 7, 7,7,'Polite and efficient', 4, 7.50, '2024-02-14 18:30:00', '2024-02-14 19:00:00', 'Delivered', 2.50),
 (8, 8, 8,8,'Satisfactory service', 1, 5.50, '2024-02-14 20:00:00', '2024-02-14 20:30:00', 'Delivered', 3.50),

@@ -5,12 +5,33 @@
     <link rel="stylesheet" href="../static/CSS/userdetails.css" />
 </head>
 <body>
+    <a href="http://127.0.0.1:5000" class="btn-back">Log Out</a>
+    <h1>User Details</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Vehichle Number</th>
+            <th>License ID</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th>Location</th>
+            <th>Availability</th>
+            <th>Password</th>
+        </tr>
+        <tr>
+            <td>{{ agent.agent_id }}</td>
+            <td>{{ agent.agent_name }}</td>
+            <td>{{ agent.vehicle_number }}</td>
+            <td>{{ agent.license_id }}</td>
+            <td>{{ agent.phone_num }}</td>
+            <td>{{ agent.email }}</td>
+            <td>{{ agent.location }}</td>
+            <td>{{ agent.availability }}</td>
+            <td>{{ agent.password }}</td>
+        </tr>
+    </table>
     <h1>Orders</h1>
-    <header class="flex justify-center items-center">
-        <a href="{{ url_for('agentdetails') }}" class="user-profile-button">Profile</a>
-    </header>
-    <a href="http://127.0.0.1:5000/dashboard" class="btn-back">Back</a>
-
     <table>
         <tr>
             <th>Order ID</th>
@@ -39,66 +60,6 @@
         <!-- {% endfor %} -->
     </table>
 
-    <!-- <h2>Address</h2>
 
-    <table>
-        <tr>
-            <th>Building Name</th>
-            <th>Street</th>
-            <th>Pin Code</th>
-            <th>City</th>
-            <th>State</th>
-        </tr>
-        {% for _address in address %}
-        <tr>
-            <td>{{ _address.building_name }}</td>
-            <td>{{ _address.street }}</td>
-            <td>{{ _address.pin_code }}</td>
-            <td>{{ _address.city }}</td>
-            <td>{{ _address.state }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-    <h2>Orders</h2>
-    <table>
-        <tr>
-            <th>Order ID</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Total Amount</th>
-            <th>Ordered items</th>
-        </tr>
-        {% for order in orders %}
-        <tr>
-            <td>{{ order.order_id }}</td>
-            <td>{{ order.placed_time.date() }}</td>
-            <td>{{ order.placed_time.time() }}</td>
-            <td>{{ order.amount }}</td>
-            <td>
-                <table>
-                    <tr>
-                        <th>Food Item</th>
-                        <th>Item Type</th>
-                        <th>Item Price</th>
-                        <th>Item Rating</th>
-                        <th> Count</th>
-                    </tr>
-                    {% for item in food_items %}
-                    <tr>
-                    {% if order.order_id == item.order_id %}
-                        <td>{{ item.food_item.item_name }}</td>
-                        <td>{{ item.food_item.item_type }}</td>
-                        <td>{{ item.food_item.item_price }}</td>
-                        <td>{{ item.food_item.item_rating }}</td>
-                        <td>{{ item.food_item.order_count }}</td>
-                    {% endif %}
-                    </tr>
-                    {% endfor %}
-                </table>
-            </td>
-        </tr>
-        {% endfor %}
-    </table> -->
 </body>
 </html>

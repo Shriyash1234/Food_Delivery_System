@@ -17,7 +17,7 @@ We have developed a food delivery website that allows users to log in or sign up
       \
       &ensp;&ensp;&ensp;&ensp;4.4.2```pip install flask-mysqldb```
       \
-      &ensp;&ensp;&ensp;&ensp;4.4.3 ```pip install flask-wtf```
+      &ensp;&ensp;&ensp;&ensp;4.4.3 ```pip install MySQLdb```
     \
   4.5 ```python app.py```
   \

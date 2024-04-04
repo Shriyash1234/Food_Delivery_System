@@ -13,7 +13,7 @@ app = Flask(__name__,static_url_path="/static")
 app.secret_key = 'Top_secret'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'shriyash123'
+app.config['MYSQL_PASSWORD'] = '****'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 # try:
@@ -205,6 +205,17 @@ def signupdelivery():
     return render_template("/delivery/signup_deli.html")
     
     
+@app.route('/signout')
+def signout():
+    session.pop('customer_id', None)
+    session.pop('restaurant_ID', None)
+    session.pop('agent_ID', None)
+    session.pop('addr_ID', None)
+    session.pop('customerbool', None)
+    session.pop('restbool', None)
+    session.pop('agentbool', None)
+    return redirect(url_for('home'))
+
 @app.route('/')
 def home():
     return render_template('home.html')

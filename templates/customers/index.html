@@ -1,6 +1,6 @@
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"</header> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Foodie's Delight: Cuisine Options</title>
     <link
@@ -35,10 +35,10 @@
         text-align: center;
         font-weight: bold;
       }
-      /* Added style for header */
+      /* Updated style for header */
       header {
-        background-color: orange-500;
-        color: black;
+        background-color: #4f46e5;
+        color: white;
         padding: 1rem;
         text-align: center;
         /* Adjust width if needed */
@@ -52,20 +52,30 @@
         position: absolute;
         top: 1rem;
         right: 1rem;
-        background-color: #4f46e5;
+        background-color: #46e559;
         color: white;
         padding: 0.5rem 1rem;
         border-radius: 5px;
         cursor: pointer;
       }
+      /* Added style for signout button */
+      .signout-button {
+        background-color: #ff0000;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+      }
     </style>
   </head>
   <body>
     <header class="flex justify-center items-center">
-      <h1 class="header-text text-blue font-bold">Foodie's Delight</h1>
-      <a href="{{ url_for('userdetails') }}" class="user-profile-button"
-        >User Profile</a
-      >
+      <h1 class="header-text text-white font-bold">Foodie's Delight</h1>
+      <a href="{{ url_for('userdetails') }}" class="user-profile-button">User Profile</a>
+      <a href="{{ url_for('signout') }}" class="signout-button">Sign Out</a>
     </header>
     <h2 class="text-3xl font-bold text-center my-4">
       Explore Cuisines From Around India
@@ -87,5 +97,15 @@
         {% endfor %}
       </li>
     </ul>
+    <footer class="bg-gray-900 text-white py-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <p>&copy; 2022 Foodie's Delight. All rights reserved.</p>
+        <ul class="flex space-x-4">
+            <li style="margin-right: auto;"><a href="{{ url_for('aboutus') }}">About Us </a></li>
+          <!-- <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li> -->
+        </ul>
+      </div>
+    </footer>
   </body>
 </html>

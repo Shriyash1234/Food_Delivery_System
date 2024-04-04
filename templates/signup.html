@@ -13,17 +13,22 @@
   <div class="cards">
     <div class="card">
       <h3>User</h3>
-      <a href="{{ url_for('signupcustomer') }}">Sign Up as User</a>
+      <img class="sign-up-img" src="../static/Assets/Images/user.png"></img>
+      <a href="{{ url_for('signupcustomer') }}">Sign Up</a>
     </div>
     <div class="card">
       <h3>Restaurant</h3>
-      <a href="{{ url_for('signuprestaurants') }}">Sign Up as Restaurant</a>
+      <img class="sign-up-img" src="../static/Assets/Images/restaurant.png"></img>
+      <a href="{{ url_for('signuprestaurants') }}">Sign Up</a>
     </div>
     <div class="card">
       <h3>Delivery Agent</h3>
-      <a href="{{ url_for('signupdelivery') }}">Sign Up as Delivery Agent</a>
+      <img class="sign-up-img" src="../static/Assets/Images/delivery_agent.png"></img>
+      <a href="{{ url_for('signupdelivery') }}">Sign Up</a>
     </div>
   </div>
+  <p>Already have an account <a href="{{ url_for('login') }}">login</a></p>
+
 </div>
 
 </body>

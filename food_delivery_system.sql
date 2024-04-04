@@ -2,6 +2,24 @@ drop database if exists food_delivery_system;
 create database food_delivery_system;
 use food_delivery_system;
 
+DROP TABLE IF EXISTS team_details;
+
+CREATE TABLE team_details (
+roll_number char(8) NOT NULL UNIQUE,
+first_name varchar(25) NOT NULL,
+last_name varchar(25),
+email_id varchar(50) NOT NULL,
+PRIMARY KEY (roll_number)
+);
+INSERT INTO team_details (roll_number, first_name, last_name, email_id) VALUES
+('22110050','Birudugadda','Srivibhav','birudugadda.srivibhav@iitgn.ac.in'),
+('22110260', 'Srivathsa', 'Vamsi', 'vamsi.srivathsa@iitgn.ac.in'),
+('22110124', 'Sriman', 'Reddy', 'kondam.reddy@iitgn.ac.in'),
+('22110162', 'Nikhilesh', 'Myanapuri', 'rajesh.sharma@example.com'),
+('20110106', 'Shriyash', 'Mandavekar', 'mandavekar.shriyash@iitgn.ac.in'),
+('20110071', 'Haikoo', 'Khandor', 'haikoo.ashok@iitgn.ac.in'),
+('20110104', 'Madhav', 'Kanda', 'madhav.kanda@iitgn.ac.in');
+
 DROP TABLE IF EXISTS Address;
 
 CREATE TABLE Address (

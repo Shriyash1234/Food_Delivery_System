@@ -563,11 +563,46 @@ def index_deliveryagent():
     return render_template('delivery/index.html', delivery=delivery, agent = agent)
     # return render_template('delivery/index.html', delivery=delivery)
 
-@app.route('/aboutus')
-def aboutus():
-    # You can render the aboutus.html template here
-    return render_template('aboutus.html')
+# @app.route('/aboutus')
+# def aboutus():
+#     # You can render the aboutus.html template here
+#     return render_template('aboutus.html')
 
+@app.route('/aboutus', methods=["GET", "POST"])
+def aboutus():
+    if (request.method=="POST"):
+        cur = mysql.connection.cursor()
+        old_col_name =str( request.values.get("col_name"))
+        new_name =str( request.values.get("new_name"))
+        if (new_name != ""):
+            sql_query = f"ALTER TABLE `team_details` RENAME COLUMN `{old_col_name}` TO `{new_name}`;"
+            cur.execute(sql_query)
+            mysql.connection.commit()
+            cur.close()
+            flask.flash("Successfully renamed the column")
+        else:
+            flask.flash("Please put up rename value of the column.")
+    sql_query = "SELECT column_name FROM information_schema.columns WHERE table_name = %s"
+    tablename = 'team_details'  
+    cur = mysql.connection.cursor()
+    cur.execute(sql_query, ("team_details",))
+    col_names = cur.fetchall()
+
+    table ={'col1':col_names[0][0],'col2':col_names[1][0],'col3':col_names[2][0],'col4':col_names[3][0],}
+    sql_query = f"SELECT `{table['col1']}`, `{table['col2']}`, `{table['col3']}`, `{table['col4']}` FROM `team_details`;"
+    cur.execute(sql_query)
+    students = cur.fetchall()
+    student_details=[]
+    for student in students:
+        temp = {
+            'col1':student[0],
+            'col2':student[1],
+            'col3':student[2],
+            'col4':student[3]
+        }
+        student_details.append(temp)
+    
+    return render_template('aboutus.html',tablename=tablename, table = table, student_details= student_details)
 
 if __name__ == '__main__':
     app.run(debug=True)

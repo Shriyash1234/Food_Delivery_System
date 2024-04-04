@@ -11,7 +11,7 @@ We have developed a food delivery website that allows users to log in or sign up
   \
   4.3 ```venv\Scripts\activate```
   \
-  4.4 ```Install all the dependencies from the requirements.txt file using pip command as below:```
+  4.4 ```Install all the required dependencies using pip commands as below:```
     \
       &ensp;&ensp;&ensp;&ensp;4.4.1 ```pip install flask```
       \

@@ -588,7 +588,7 @@ def aboutus():
     cur.execute(sql_query, ("team_details",))
     col_names = cur.fetchall()
 
-    table ={'col1':col_names[0][0],'col2':col_names[1][0],'col3':col_names[2][0],'col4':col_names[3][0],}
+    table ={'col1':col_names[4][0],'col2':col_names[5][0],'col3':col_names[6][0],'col4':col_names[7][0],}
     sql_query = f"SELECT `{table['col1']}`, `{table['col2']}`, `{table['col3']}`, `{table['col4']}` FROM `team_details`;"
     cur.execute(sql_query)
     students = cur.fetchall()

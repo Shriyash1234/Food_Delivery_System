@@ -132,7 +132,7 @@
               <p>Availability: {{ food.availability }}</p>
               <p>Vegetarian: {{ food.vegetarian }}</p>
               <a
-                href="{{ url_for('edit_menu', item_id=food.item_id) }}"
+                href="{{ url_for('edit_menu', item_id=food.item_id,rest_id=restaurant_id) }}"
                 class="btn btn-primary"
                 >Edit Menu</a
               >

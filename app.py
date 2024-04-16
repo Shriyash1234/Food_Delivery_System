@@ -7,6 +7,7 @@ from flask import Flask,jsonify,render_template,request,redirect,url_for,session
 import flask
 import random
 from flask_mysqldb import MySQL
+from functools import wraps
 # import MySQLdb
 
 app = Flask(__name__,static_url_path="/static")
@@ -17,16 +18,16 @@ app.config['MYSQL_PASSWORD'] = 'sriroot'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 
-os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1" # to allow Http traffic for local dev
+# os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1" # to allow Http traffic for local dev
 
-GOOGLE_CLIENT_ID = "client secret"
-client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client.json")
+# GOOGLE_CLIENT_ID = "client secret"
+# client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client.json")
 
-flow = Flow.from_client_secrets_file(
-    client_secrets_file=client_secrets_file,
-    scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
-    redirect_uri="http://localhost:5000/callback"
-)
+# flow = Flow.from_client_secrets_file(
+#     client_secrets_file=client_secrets_file,
+#     scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
+#     redirect_uri="http://localhost:5000/callback"
+# )
 # try:
 #     mysql.connection.ping(reconnect=True)
 # except MySQLdb.Error as e:
@@ -34,7 +35,33 @@ flow = Flow.from_client_secrets_file(
 #     # Handle error accordingly, maybe retry connection or exit the application
 
 
+# Decorator function to check if user is logged in
+def login_rest(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'restaurant_ID' not in session:
+            # Redirect to login page if user is not logged in
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
+def login_cust(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'customer_id' not in session:
+            # Redirect to login page if user is not logged in
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def login_agent(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'agent_ID' not in session:
+            # Redirect to login page if user is not logged in
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # login for all
 @app.route('/login',methods=['GET', 'POST'])
@@ -232,6 +259,7 @@ def home():
     return render_template('home.html')
 
 @app.route('/dashboard')
+@login_cust
 def index():
     cur = mysql.connection.cursor()
 
@@ -262,6 +290,7 @@ def fetch_food_item_from_database(item_id):
     return food_items
 
 @app.route('/restaurants/<cuisine_type>')
+@login_rest
 def restaurants_by_cuisine(cuisine_type):
     cur = mysql.connection.cursor()
 
@@ -274,6 +303,7 @@ def restaurants_by_cuisine(cuisine_type):
     return render_template("/customers/restaurants.html", cuisine_type=cuisine_type, restaurants=restaurants)
 
 @app.route('/restaurants/<cuisine_type>/<restaurant_id>')
+@login_rest
 def restaurant_menu(restaurant_id, cuisine_type):
     cur = mysql.connection.cursor()
     cur.execute('''
@@ -299,6 +329,7 @@ def restaurant_menu(restaurant_id, cuisine_type):
     return render_template("/customers/menu.html",food_items=food_items,restaurant_name=restaurant_name)
 
 @app.route('/restaurant')
+@login_rest
 def restaurant_details():
     cur = mysql.connection.cursor()
     restaurant_id = session["restaurant_ID"]
@@ -348,6 +379,7 @@ def restaurant_details():
     
     return render_template("/restaurants/details.html", restaurant_details=restaurant_details, order_details=order_details,menu=food_items)
 @app.route('/restaurant/add_item', methods=['GET', 'POST'])
+@login_rest
 def add_item():
     if request.method == 'POST':
         # Fetch form data
@@ -375,7 +407,9 @@ def add_item():
     # return render_template('restaurants/details.html')
     else:
         return render_template('restaurants/add_item.html')
+    
 @app.route('/delete_item/<item_id>')  
+@login_rest
 def delete_item(item_id):
     cur = mysql.connection.cursor()
     cur.execute('''
@@ -386,6 +420,7 @@ def delete_item(item_id):
     return redirect(url_for('restaurant_details'))
 
 @app.route('/restaurant/editmenu/<item_id>', methods=['GET', 'POST'])
+@login_rest
 def edit_menu(item_id):
     if request.method == 'POST':
         # Fetch form data
@@ -412,6 +447,7 @@ def edit_menu(item_id):
         return render_template('restaurants/edit_menu.html', food_item=food_item)
 
 @app.route('/userdetails')
+@login_cust
 # should contain some details of the user like account details, address, and orders made by the user
 def userdetails():
     customer_id = session.get('customer_id')
@@ -478,6 +514,7 @@ def userdetails():
     return render_template("/customers/userdetails.html", user=user, address=address, orders=orders, food_items=food_items, phone = contact_details.get('phone'), email = contact_details.get('email'))
 
 @app.route('/ordersummary', methods=['GET', 'POST'])
+@login_cust
 def ordersummary():
     rest_id = request.args.get('rest_id')
     payment_method = request.args.get('payment_method')
@@ -504,6 +541,7 @@ def ordersummary():
     cursor.execute('select max(agent_id) from delivery_agent')
     num_delivery_agents = cursor.fetchone()
     agent_id = random.randint(1, int(num_delivery_agents[0]))
+    cursor.execute('update restaurant set balance_earned = balance_earned + %s/10 where restaurant_id = %s;', (amount,rest_id))
     cursor.execute('insert into payment (payment_id, payment_method, payment_status, amount, time) values (%s, %s, %s, %s, %s);', (payment_ID, payment_method, payment_status, amount, placed_time))
     cursor.execute('insert into orders (order_id, customer_id,restaurant_id, payment_id, order_status, placed_time, amount) values (%s, %s,%s, %s, %s, %s, %s);', (order_ID, customer_id,rest_id, payment_ID, order_status, placed_time, amount))
     cursor.execute('insert into delivery (order_id, agent_id,customer_id, restaurant_id, delivery_review, delivery_rating, delivery_charges, pickup_time, delivery_time, delivery_status,tip) values (%s, %s,%s, %s, %s, %s, %s,%s, %s,%s, %s);', (order_ID,agent_id, customer_id,rest_id, "", random.randint(1, 5), random.randint(1, 9),datetime.now(),datetime.now()+timedelta(minutes=30),"Placed",random.randint(1, 5)))
@@ -525,6 +563,7 @@ def ordersummary():
     return redirect(url_for('userdetails'))
 
 @app.route('/delivery_dashboard', methods=['GET', 'POST'])
+@login_agent
 def index_deliveryagent():
     agent_id = session.get('agent_ID')
     cur = mysql.connection.cursor()

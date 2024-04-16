@@ -53,7 +53,7 @@ def login():
                 flask.flash(msg)
                 return redirect(url_for('index'))
             else:
-                time.sleep(2)
+                # time.sleep(2)
                 msg = 'Incorrect username / password !'
         elif (authority == "Delivery Agent"):
             cursor.execute("SELECT * FROM delivery_agent WHERE email = %s AND password = %s", (useremail, password, ))
@@ -66,7 +66,7 @@ def login():
                 flask.flash(msg)
                 return redirect(url_for('index_deliveryagent'))
             else:
-                time.sleep(2)
+                # time.sleep(2)
                 msg = 'Incorrect username / password !'
         elif (authority == "Restaurant"):
             cursor.execute("SELECT * FROM Restaurant WHERE contact_details->>'$.email' = %s AND password = %s", (useremail, password, ))
@@ -80,11 +80,12 @@ def login():
                 flask.flash(msg)
                 return redirect(url_for('restaurant_details'))
             else:
-                time.sleep(2)
+                # time.sleep(2)
                 msg = 'Incorrect username / password !'
         else:
-            time.sleep(2)
+            # time.sleep(2)
             msg = 'Incorrect username / password !'
+        # print(1234)
         flask.flash(msg)
     return render_template('login.html', msg = msg)
 

@@ -1,5 +1,6 @@
 from curses import flash
 from datetime import datetime
+from datetime import timedelta
 import requests
 import os
 import pathlib
@@ -8,6 +9,7 @@ import time
 import MySQLdb
 from flask import Flask,jsonify,render_template,request,redirect,url_for,session,abort
 import flask
+import random 
 from flask_mysqldb import MySQL
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
@@ -25,7 +27,7 @@ mysql = MySQL(app)
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1" # to allow Http traffic for local dev
 
-# GOOGLE_CLIENT_ID = "client_ID"
+GOOGLE_CLIENT_ID = "client_id"
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client.json")
 
 flow = Flow.from_client_secrets_file(
@@ -38,8 +40,6 @@ flow = Flow.from_client_secrets_file(
 # except MySQLdb.Error as e:
 #     print(f"Error connecting to MySQL: {e}")
 #     # Handle error accordingly, maybe retry connection or exit the application
-
-
 def login_is_required(function):
     def wrapper(*args, **kwargs):
         if "google_id" not in session:
@@ -95,6 +95,9 @@ def logout():
 def protected_area():
     return f"Hello {session['name']}! <br/> <a href='/logout'><button>Logout</button></a>"
 
+
+
+
 # login for all
 @app.route('/login',methods=['GET', 'POST'])
 def login():
@@ -131,10 +134,10 @@ def login():
             if account:
                 session['agentbool'] = True
                 session['cutomerbool'], session['restbool'] = False, False
-                session['agent_ID'] = account['agent_ID']
+                session['agent_ID'] = account['agent_id']
                 msg = 'Logged in successfully !'
                 flask.flash(msg)
-                return redirect(url_for('index'))
+                return redirect(url_for('index_deliveryagent'))
             else:
                 time.sleep(2)
                 msg = 'Incorrect username / password !'
@@ -145,10 +148,10 @@ def login():
             if account:
                 session['restbool'] = True
                 session['agentbool'], session['customerbool'] = False, False
-                session['restaurant_ID'] = account['restaurant_ID']
+                session['restaurant_ID'] = account['restaurant_id']
                 msg = 'Logged in successfully !'
                 flask.flash(msg)
-                return redirect(url_for('index'))
+                return redirect(url_for('restaurant_details'))
             else:
                 time.sleep(2)
                 msg = 'Incorrect username / password !'
@@ -275,6 +278,17 @@ def signupdelivery():
     return render_template("/delivery/signup_deli.html")
     
     
+@app.route('/signout')
+def signout():
+    session.pop('customer_id', None)
+    session.pop('restaurant_ID', None)
+    session.pop('agent_ID', None)
+    session.pop('addr_ID', None)
+    session.pop('customerbool', None)
+    session.pop('restbool', None)
+    session.pop('agentbool', None)
+    return redirect(url_for('home'))
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -297,6 +311,18 @@ def index():
 
     return render_template("/customers/index.html", users=users, cuisines=cuisines)
 
+def fetch_food_item_from_database(item_id):
+    cur = mysql.connection.cursor()
+    cur.execute('''
+        SELECT *
+        FROM food_item
+        WHERE item_id = %s
+    ''', (item_id,))
+    food_item_data = cur.fetchall()
+    food_item_columns = [col[0] for col in cur.description]
+    food_items = [dict(zip(food_item_columns, row)) for row in food_item_data]
+    return food_items
+
 @app.route('/restaurants/<cuisine_type>')
 def restaurants_by_cuisine(cuisine_type):
     cur = mysql.connection.cursor()
@@ -317,7 +343,7 @@ def restaurant_menu(restaurant_id, cuisine_type):
     FROM food_item 
     JOIN restaurant ON food_item.restaurant_id = restaurant.restaurant_id 
     WHERE restaurant.restaurant_id = %s
-    ''', (restaurant_id))
+    ''', (restaurant_id,))
     food_item_data = cur.fetchall()
     food_item_columns = [col[0] for col in cur.description]
     food_items = [dict(zip(food_item_columns, row)) for row in food_item_data]
@@ -326,13 +352,126 @@ def restaurant_menu(restaurant_id, cuisine_type):
     SELECT restaurant_name
     from restaurant
     WHERE restaurant.restaurant_id = %s
-    ''', (restaurant_id))
+    ''', (restaurant_id,))
     restaurant_name_data = cur.fetchall()
     restaurant_name_columns = [col[0] for col in cur.description]
     restaurant_name = [dict(zip(restaurant_name_columns, row)) for row in restaurant_name_data]
     # print(food_items)
 
     return render_template("/customers/menu.html",food_items=food_items,restaurant_name=restaurant_name)
+
+@app.route('/restaurant')
+def restaurant_details():
+    cur = mysql.connection.cursor()
+    restaurant_id = session["restaurant_ID"]
+    # Fetch restaurant details
+    cur.execute('''
+    SELECT *
+    FROM restaurant
+    WHERE restaurant_id = %s
+    ''', (restaurant_id,))
+    restaurant_details_data = cur.fetchone()
+    restaurant_details_columns = [col[0] for col in cur.description]
+    restaurant_details = dict(zip(restaurant_details_columns, restaurant_details_data))
+
+    # Fetch order details
+    cur.execute('''
+    SELECT
+       o.order_id,
+       GROUP_CONCAT(oi.item_quantity) AS item_quantities,
+       GROUP_CONCAT(oi.notes) AS notes,
+       GROUP_CONCAT(fi.item_name) AS item_names,
+       SUM(fi.item_price) AS total_price,
+       AVG(fi.item_rating) AS avg_food_rating,
+       o.order_status,
+       o.placed_time,
+       o.amount
+    FROM orders o
+    JOIN ordered_items oi ON o.order_id = oi.order_id
+    JOIN food_item fi ON oi.item_id = fi.item_id
+    WHERE fi.restaurant_id = %s
+    GROUP BY o.order_id;
+    ''', (restaurant_id,))
+    order_details_data = cur.fetchall()
+    order_details_columns = [col[0] for col in cur.description]
+    order_details = [dict(zip(order_details_columns, row)) for row in order_details_data]
+    
+
+    cur.execute('''
+    SELECT *
+    FROM food_item 
+    JOIN restaurant ON food_item.restaurant_id = restaurant.restaurant_id 
+    WHERE restaurant.restaurant_id = %s
+    ''', (restaurant_id,))
+    food_item_data = cur.fetchall()
+    food_item_columns = [col[0] for col in cur.description]
+    food_items = [dict(zip(food_item_columns, row)) for row in food_item_data]
+
+    
+    return render_template("/restaurants/details.html", restaurant_details=restaurant_details, order_details=order_details,menu=food_items)
+@app.route('/restaurant/add_item', methods=['GET', 'POST'])
+def add_item():
+    if request.method == 'POST':
+        # Fetch form data
+        item_name = request.form['item_name']
+        item_price = float(request.form['item_price'])
+        item_type = request.form['item_type']
+        vegetarian = True if request.form.get('vegetarian') else False
+        availability = True if request.form.get('availability') else False
+        restaurant_id = session["restaurant_ID"]
+        cursor = mysql.connection.cursor()
+        cursor.execute('select max(item_id) from food_item;')
+        item_ID = cursor.fetchone()
+        item_ID = str(int(item_ID[0]) + 1)
+        # order_count = 0
+        # Insert food item details into the database
+        cur = mysql.connection.cursor()
+        cur.execute('''
+            INSERT INTO food_item (item_id,item_name, item_price, item_type, vegetarian, availability, restaurant_id)
+            VALUES (%s,%s, %s, %s, %s, %s, %s)
+        ''', (item_ID, item_name, item_price, item_type, vegetarian, availability, restaurant_id))
+        mysql.connection.commit()
+        
+        # Redirect the user back to the menu page after adding the new item
+        return redirect(url_for('restaurant_details'))
+    # return render_template('restaurants/details.html')
+    else:
+        return render_template('restaurants/add_item.html')
+@app.route('/delete_item/<item_id>')  
+def delete_item(item_id):
+    cur = mysql.connection.cursor()
+    cur.execute('''
+        DELETE FROM food_item
+        WHERE item_id = %s
+    ''', (item_id,))
+    mysql.connection.commit()
+    return redirect(url_for('restaurant_details'))
+
+@app.route('/restaurant/editmenu/<item_id>', methods=['GET', 'POST'])
+def edit_menu(item_id):
+    if request.method == 'POST':
+        # Fetch form data
+        new_item_name = request.form['item_name']
+        new_item_price = float(request.form['item_price'])
+        new_item_type = request.form['item_type']
+        new_vegetarian = True if request.form.get('vegetarian') else False
+        new_availability = True if request.form.get('availability') else False
+        
+        # Update food item details in the database
+        cur = mysql.connection.cursor()
+        cur.execute('''
+            UPDATE food_item
+            SET item_name = %s, item_price = %s, item_type = %s, vegetarian = %s, availability = %s
+            WHERE item_id = %s
+        ''', (new_item_name, new_item_price, new_item_type, new_vegetarian, new_availability, item_id))
+        mysql.connection.commit()
+        
+        # Redirect the user back to the menu page after editing
+        return redirect(url_for('restaurant_details'))  # Assuming 'menu' is the route for displaying the menu
+    else:
+        # Fetch the details of the food item with the given item_id from the database
+        food_item = fetch_food_item_from_database(item_id)
+        return render_template('restaurants/edit_menu.html', food_item=food_item)
 
 @app.route('/userdetails')
 # should contain some details of the user like account details, address, and orders made by the user
@@ -410,33 +549,133 @@ def ordersummary():
     order_status = "Processing"
     placed_time = datetime.now()
     amount =0
-    # ordered_items is list of dictionaries where each dictionary contains item_id, item_quantity, notes, item_price
     for item in ordered_items:
-        cursor = mysql.connection.cursor()
-        cursor.execute('select max(order_id) from Orders;')
-        order_ID = cursor.fetchone()
-        order_ID = str(int(order_ID[0]) + 1)
-        cursor.execute('select max(payment_id) from Payment;')
-        payment_ID = cursor.fetchone()
-        payment_ID = str(int(payment_ID[0]) + 1)
         item_ID = item["item_id"]
         item_quantity = item["item_quantity"]
         notes = item["notes"]
         item_price = item['item_price']
         if (item_quantity != "0"):
             amount += item_price * int(item_quantity)
+    cursor = mysql.connection.cursor()
+    cursor.execute('select max(order_id) from Orders;')
+    order_ID = cursor.fetchone()
+    order_ID = str(int(order_ID[0]) + 1)
+    cursor.execute('select max(payment_id) from Payment;')
+    payment_ID = cursor.fetchone()
+    payment_ID = str(int(payment_ID[0]) + 1)
+    cursor.execute('select max(agent_id) from delivery_agent')
+    num_delivery_agents = cursor.fetchone()
+    agent_id = random.randint(1, int(num_delivery_agents[0]))
+    cursor.execute('insert into payment (payment_id, payment_method, payment_status, amount, time) values (%s, %s, %s, %s, %s);', (payment_ID, payment_method, payment_status, amount, placed_time))
+    cursor.execute('insert into orders (order_id, customer_id,restaurant_id, payment_id, order_status, placed_time, amount) values (%s, %s,%s, %s, %s, %s, %s);', (order_ID, customer_id,rest_id, payment_ID, order_status, placed_time, amount))
+    cursor.execute('insert into delivery (order_id, agent_id,customer_id, restaurant_id, delivery_review, delivery_rating, delivery_charges, pickup_time, delivery_time, delivery_status,tip) values (%s, %s,%s, %s, %s, %s, %s,%s, %s,%s, %s);', (order_ID,agent_id, customer_id,rest_id, "", random.randint(1, 5), random.randint(1, 9),datetime.now(),datetime.now()+timedelta(minutes=30),"Placed",random.randint(1, 5)))
+    # ordered_items is list of dictionaries where each dictionary contains item_id, item_quantity, notes, item_price
+    for item in ordered_items:
+        item_ID = item["item_id"]
+        item_quantity = item["item_quantity"]
+        notes = item["notes"]
+        item_price = item['item_price']
+        if (item_quantity != "0"):
             cursor.execute('update food_item set order_count = order_count + 1 where item_id = %s;', (item_ID,))
-            cursor.execute('insert into payment (payment_id, payment_method, payment_status, amount, time) values (%s, %s, %s, %s, %s);', (payment_ID, payment_method, payment_status, amount, placed_time))
-            cursor.execute('insert into orders (order_id, customer_id, payment_id, order_status, placed_time, amount) values (%s, %s, %s, %s, %s, %s);', (order_ID, customer_id, payment_ID, order_status, placed_time, amount))
             cursor.execute('insert into ordered_items (order_id, item_id, item_quantity, item_rating, item_review, notes) values (%s, %s, %s, %s, %s, %s);', (order_ID, item_ID, item_quantity, 4, None, notes))
             mysql.connection.commit()
+   
     # cursor.execute("select name from restaurant where restaurant_ID = %s;", (str(rest_id),))
     # rest_name = cursor.fetchone()[0]
     cursor.close()
     # flash("Order successfully submitted.")
-    return render_template('customers/ordersummary.html', total_price=amount, items=ordered_items, rest_name="rest_name")
+    return redirect(url_for('userdetails'))
 
+@app.route('/delivery_dashboard', methods=['GET', 'POST'])
+def index_deliveryagent():
+    agent_id = session.get('agent_ID')
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM Delivery WHERE agent_id = %s", (agent_id,))
+    delivery_data = cur.fetchall()
+    delivery_data_columns = [col[0] for col in cur.description]
+    delivery = [dict(zip(delivery_data_columns, row)) for row in delivery_data]
+    for delivery_item in delivery:
+        # Fetch customer address
+        customer_id = delivery_item['customer_id']
+        cur.execute("SELECT a.building_name, a.street, a.pin_code, a.city, a.state FROM Customer_Address ca JOIN Address a ON ca.address_id = a.address_id WHERE ca.customer_id = %s", (customer_id,))
+        customer_address_data = cur.fetchone()
+        if customer_address_data:
+            customer_address = {
+                'building_name': customer_address_data[0],
+                'street': customer_address_data[1],
+                'pin_code': customer_address_data[2],
+                'city': customer_address_data[3],
+                'state': customer_address_data[4]
+            }
+        else:
+            customer_address = None
+        delivery_item['customer_address'] = customer_address
+        
+        # Fetch restaurant details
+        restaurant_id = delivery_item['restaurant_id']
+        cur.execute("SELECT a.building_name, a.street, a.pin_code, a.city, a.state FROM restaurant_address r JOIN Address a ON r.address_id = a.address_id WHERE r.restaurant_id = %s", (restaurant_id,))
+        restaurant_address_data = cur.fetchone()
+        if restaurant_address_data:
+            restaurant_address = {
+                'building_name': restaurant_address_data[0],
+                'street': restaurant_address_data[1],
+                'pin_code': restaurant_address_data[2],
+                'city': restaurant_address_data[3],
+                'state': restaurant_address_data[4]
+            }
+        else:
+            restaurant_address = None
+        delivery_item['restaurant_address'] = restaurant_address
 
+        agent_id = session.get('agent_ID')
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM Delivery_Agent WHERE agent_id = %s", (agent_id,))
+        agent_data = cur.fetchall()
+        agent_columns = [col[0] for col in cur.description]
+        agent = [dict(zip(agent_columns, row)) for row in agent_data][0] 
+    return render_template('delivery/index.html', delivery=delivery, agent = agent)
+    # return render_template('delivery/index.html', delivery=delivery)
+
+# @app.route('/aboutus')
+# def aboutus():
+#     # You can render the aboutus.html template here
+#     return render_template('aboutus.html')
+
+@app.route('/aboutus', methods=["GET", "POST"])
+def aboutus():
+    if (request.method=="POST"):
+        cur = mysql.connection.cursor()
+        old_col_name =str( request.values.get("col_name"))
+        new_name =str( request.values.get("new_name"))
+        if (new_name != ""):
+            sql_query = f"ALTER TABLE `team_details` RENAME COLUMN `{old_col_name}` TO `{new_name}`;"
+            cur.execute(sql_query)
+            mysql.connection.commit()
+            cur.close()
+            flask.flash("Successfully renamed the column")
+        else:
+            flask.flash("Please put up rename value of the column.")
+    sql_query = "SELECT column_name FROM information_schema.columns WHERE table_name = %s"
+    tablename = 'team_details'  
+    cur = mysql.connection.cursor()
+    cur.execute(sql_query, ("team_details",))
+    col_names = cur.fetchall()
+
+    table ={'col1':col_names[0][0],'col2':col_names[1][0],'col3':col_names[2][0],'col4':col_names[3][0],}
+    sql_query = f"SELECT `{table['col1']}`, `{table['col2']}`, `{table['col3']}`, `{table['col4']}` FROM `team_details`;"
+    cur.execute(sql_query)
+    students = cur.fetchall()
+    student_details=[]
+    for student in students:
+        temp = {
+            'col1':student[0],
+            'col2':student[1],
+            'col3':student[2],
+            'col4':student[3]
+        }
+        student_details.append(temp)
+    
+    return render_template('aboutus.html',tablename=tablename, table = table, student_details= student_details)
 
 if __name__ == '__main__':
     app.run(debug=True)

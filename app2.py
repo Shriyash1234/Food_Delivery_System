@@ -18,16 +18,16 @@ import google.auth.transport.requests
 # import MySQLdb
 
 app = Flask(__name__,static_url_path="/static")
-# app.secret_key = "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"
+app.secret_key = "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"
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'shriyash123'
+app.config['MYSQL_PASSWORD'] = 'sriroot'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1" # to allow Http traffic for local dev
 
-# GOOGLE_CLIENT_ID = "782674812064-7rhm62kv2udu5a7emdfdlvormkvjb83h.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = "782674812064-7rhm62kv2udu5a7emdfdlvormkvjb83h.apps.googleusercontent.com"
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client.json")
 
 flow = Flow.from_client_secrets_file(
@@ -40,22 +40,8 @@ flow = Flow.from_client_secrets_file(
 # except MySQLdb.Error as e:
 #     print(f"Error connecting to MySQL: {e}")
 #     # Handle error accordingly, maybe retry connection or exit the application
-def login_is_required(function):
-    def wrapper(*args, **kwargs):
-        if "google_id" not in session:
-            return abort(401)  # Authorization required
-        else:
-            return function()
 
-    return wrapper
 
-def google_login_required(function):
-    def wrapper(*args, **kwargs):
-        if "google_id" not in session:
-            return abort(401)  # Authorization required
-        else:
-            return function(*args, **kwargs)
-    return wrapper
 @app.route("/callback")
 def callback():
     flow.fetch_token(authorization_response=request.url)
@@ -91,13 +77,8 @@ def logout():
     return redirect("/")
 
 @app.route("/protected_area")
-@login_is_required
 def protected_area():
     return f"Hello {session['name']}! <br/> <a href='/logout'><button>Logout</button></a>"
-
-
-
-
 # login for all
 @app.route('/login',methods=['GET', 'POST'])
 def login():
@@ -113,7 +94,8 @@ def login():
                 msg = "Single Quote (') is not allowed in username field."
                 flask.flash(msg)
                 return redirect(url_for('login'))
-            cursor.execute("SELECT * FROM Customers WHERE contact_details->>'$.email' = %s AND password = %s", (useremail, password,))
+            # cursor.execute("SELECT * FROM Customers WHERE contact_details->>'$.email' = %s AND password = %s", (useremail, password,))
+            cursor.execute("SELECT * FROM Customers WHERE contact_details->>'$.email' = '" + str(useremail) + "' AND password = '" + str(password) + "'")
             account = cursor.fetchone()
             if account:
                 session['customerbool'] = True
@@ -569,7 +551,6 @@ def ordersummary():
     cursor.execute('insert into payment (payment_id, payment_method, payment_status, amount, time) values (%s, %s, %s, %s, %s);', (payment_ID, payment_method, payment_status, amount, placed_time))
     cursor.execute('insert into orders (order_id, customer_id,restaurant_id, payment_id, order_status, placed_time, amount) values (%s, %s,%s, %s, %s, %s, %s);', (order_ID, customer_id,rest_id, payment_ID, order_status, placed_time, amount))
     cursor.execute('insert into delivery (order_id, agent_id,customer_id, restaurant_id, delivery_review, delivery_rating, delivery_charges, pickup_time, delivery_time, delivery_status,tip) values (%s, %s,%s, %s, %s, %s, %s,%s, %s,%s, %s);', (order_ID,agent_id, customer_id,rest_id, "", random.randint(1, 5), random.randint(1, 9),datetime.now(),datetime.now()+timedelta(minutes=30),"Placed",random.randint(1, 5)))
-    cursor.execute('update restaurant set balance_earned = balance_earned + %s/10 where restaurant_id = %s;', (amount,rest_id))
     # ordered_items is list of dictionaries where each dictionary contains item_id, item_quantity, notes, item_price
     for item in ordered_items:
         item_ID = item["item_id"]
@@ -649,7 +630,7 @@ def aboutus():
         old_col_name =str( request.values.get("col_name"))
         new_name =str( request.values.get("new_name"))
         if (new_name != ""):
-            sql_query = f"ALTER TABLE team_details RENAME COLUMN {old_col_name} TO {new_name};"
+            sql_query = f"ALTER TABLE `team_details` RENAME COLUMN `{old_col_name}` TO `{new_name}`;"
             cur.execute(sql_query)
             mysql.connection.commit()
             cur.close()
@@ -662,7 +643,7 @@ def aboutus():
     cur.execute(sql_query, ("team_details",))
     col_names = cur.fetchall()
 
-    table ={'col1':col_names[0][0],'col2':col_names[1][0],'col3':col_names[2][0],'col4':col_names[3][0],}
+    table ={'col1':col_names[4][0],'col2':col_names[5][0],'col3':col_names[6][0],'col4':col_names[7][0],}
     sql_query = f"SELECT `{table['col1']}`, `{table['col2']}`, `{table['col3']}`, `{table['col4']}` FROM `team_details`;"
     cur.execute(sql_query)
     students = cur.fetchall()
@@ -678,5 +659,5 @@ def aboutus():
     
     return render_template('aboutus.html',tablename=tablename, table = table, student_details= student_details)
 
-if __name__ == '_main_':
+if __name__ == '__main__':
     app.run(debug=True)

@@ -20,7 +20,10 @@
                         <ul class="menu-ul clear-all">
                             <li class="has-child">
                                 <li class="has-child">
-                                    <a href="{{ url_for('googlelogin') }}" class='text-wrapper-2 header-button'>Login</a>
+                                    <a href="{{ url_for('aboutus') }}" class='text-wrapper-2 header-button'>About Us</a>
+                                </li>
+                                <li class="has-child">
+                                    <a href="{{ url_for('login') }}" class='text-wrapper-2 header-button'>Login</a>
                                 </li>
                                 <li class="has-child">
                                     <a href="{{ url_for('signup') }}" class='text-wrapper-2 header-button'>Signup</a>
@@ -35,9 +38,9 @@
         <div class="Home-text">
             <h1 class="Home-heading">Get your Food<br> Delivery at your<br> Doorstep</h1>
             <p class="Home-para">Check the website and get our ice cream, snacks,<br>
-                drinks, pastries van in 10 minutes.</p>
+                drinks, pastries in 10 minutes.</p>
             <img src="./static/Assets/Images/food-delivery-rider.png" class="Home-text-img"></img>
-            <button class="home-get-started">Get Started</button>    
+            <a href="{{ url_for('signup') }}"><button class="home-get-started">Get Started</button></a> 
         </div>
         <div class="Home-image-div">
             <img src="./static/Assets/Images/food-delivery-rider.png" class="home-image"></img>

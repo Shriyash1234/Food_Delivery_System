@@ -118,3 +118,11 @@ button:hover {
 .card a:hover {
   background: linear-gradient(to right, #0062cc, #0056b3);
 }
+
+.Incorrect-password{
+  width: 100%;
+  text-align: center;
+  color: red;
+  background-color: #f0d0d3;
+  padding: 10px;
+}

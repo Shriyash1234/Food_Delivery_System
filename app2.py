@@ -18,7 +18,7 @@ import google.auth.transport.requests
 # import MySQLdb
 
 app = Flask(__name__,static_url_path="/static")
-app.secret_key = "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"
+app.secret_key = "secret_key"
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'sriroot'
@@ -27,7 +27,7 @@ mysql = MySQL(app)
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1" # to allow Http traffic for local dev
 
-GOOGLE_CLIENT_ID = "782674812064-7rhm62kv2udu5a7emdfdlvormkvjb83h.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = "google client"
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client.json")
 
 flow = Flow.from_client_secrets_file(

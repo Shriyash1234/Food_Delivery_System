@@ -15,19 +15,20 @@ from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
 import google.auth.transport.requests
+from functools import wraps
 # import MySQLdb
 
 app = Flask(__name__,static_url_path="/static")
-app.secret_key = "client_secret"
+app.secret_key = "enter secret key"
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'shriyash123'
+app.config['MYSQL_PASSWORD'] = 'sriroot'
 app.config['MYSQL_DB'] = 'food_delivery_system'
 mysql = MySQL(app)
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1" # to allow Http traffic for local dev
 
-GOOGLE_CLIENT_ID = "client_id"
+GOOGLE_CLIENT_ID = "782674812064-7rhm62kv2udu5a7emdfdlvormkvjb83h.apps.googleusercontent.com"
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client.json")
 
 flow = Flow.from_client_secrets_file(
@@ -40,14 +41,52 @@ flow = Flow.from_client_secrets_file(
 # except MySQLdb.Error as e:
 #     print(f"Error connecting to MySQL: {e}")
 #     # Handle error accordingly, maybe retry connection or exit the application
-def login_is_required(function):
-    def wrapper(*args, **kwargs):
-        if "google_id" not in session:
-            return abort(401)  # Authorization required
-        else:
-            return function()
 
-    return wrapper
+# def login_is_required(function):
+#     def wrapper(*args, **kwargs):
+#         if "google_id" not in session:
+#             return abort(401)  # Authorization required
+#         else:
+#             return function()
+
+#     return wrapper
+
+def login_is_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'google_id' not in session:
+            # Redirect to login page if user is not logged in
+            return redirect(url_for('googlelogin'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# Decorator function to check if user is logged in
+def login_rest(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'restaurant_ID' not in session:
+            # Redirect to login page if user is not logged in
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def login_cust(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'customer_id' not in session:
+            # Redirect to login page if user is not logged in
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def login_agent(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'agent_ID' not in session:
+            # Redirect to login page if user is not logged in
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 def google_login_required(function):
     def wrapper(*args, **kwargs):
@@ -100,6 +139,7 @@ def protected_area():
 
 # login for all
 @app.route('/login',methods=['GET', 'POST'])
+@login_is_required
 def login():
     msg = ''
     if request.method == 'POST' and 'useremail' in request.form and 'password' in request.form and 'authority' in request.form:
@@ -163,7 +203,7 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    return render_template('signup.html')
+    return render_template('google_su.html')
 
 @app.route('/signupcustomer',methods=['GET', 'POST'])
 def signupcustomer():
@@ -291,9 +331,11 @@ def signout():
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('googlehome.html')
 
 @app.route('/dashboard')
+@login_is_required
+@login_cust
 def index():
     cur = mysql.connection.cursor()
 
@@ -324,6 +366,8 @@ def fetch_food_item_from_database(item_id):
     return food_items
 
 @app.route('/restaurants/<cuisine_type>')
+@login_is_required
+@login_rest
 def restaurants_by_cuisine(cuisine_type):
     cur = mysql.connection.cursor()
 
@@ -335,6 +379,8 @@ def restaurants_by_cuisine(cuisine_type):
     return render_template("/customers/restaurants.html", cuisine_type=cuisine_type, restaurants=restaurants)
 
 @app.route('/restaurants/<cuisine_type>/<restaurant_id>')
+@login_is_required
+@login_rest
 def restaurant_menu(restaurant_id, cuisine_type):
     cur = mysql.connection.cursor()
     cur.execute('''
@@ -363,6 +409,8 @@ def restaurant_menu(restaurant_id, cuisine_type):
     
 
 @app.route('/restaurant')
+@login_is_required
+@login_rest
 def restaurant_details():
     
     cur = mysql.connection.cursor()
@@ -418,7 +466,10 @@ def restaurant_details():
 
     
     return render_template("/restaurants/details.html", restaurant_details=restaurant_details, order_details=order_details,menu=food_items, restaurant_id = restaurant_id)
+
 @app.route('/restaurant/add_item', methods=['GET', 'POST'])
+@login_is_required
+@login_rest
 def add_item():
     if request.method == 'POST':
         # Fetch form data
@@ -446,7 +497,10 @@ def add_item():
     # return render_template('restaurants/details.html')
     else:
         return render_template('restaurants/add_item.html')
-@app.route('/delete_item/<item_id>')  
+    
+@app.route('/delete_item/<item_id>')
+@login_is_required  
+@login_rest
 def delete_item(item_id):
     cur = mysql.connection.cursor()
     cur.execute('''
@@ -457,6 +511,8 @@ def delete_item(item_id):
     return redirect(url_for('restaurant_details'))
 
 @app.route('/restaurant/editmenu/<item_id>/<rest_id>', methods=['GET', 'POST'])
+@login_is_required
+@login_rest
 def edit_menu(item_id, rest_id):
     cur = mysql.connection.cursor()
     cur.execute('''
@@ -516,6 +572,8 @@ def edit_menu(item_id, rest_id):
         return render_template('restaurants/edit_menu.html', food_item=food_item)
 
 @app.route('/userdetails')
+@login_is_required
+@login_cust
 # should contain some details of the user like account details, address, and orders made by the user
 def userdetails():
     customer_id = session.get('customer_id')
@@ -582,6 +640,8 @@ def userdetails():
     return render_template("/customers/userdetails.html", user=user, address=address, orders=orders, food_items=food_items, phone = contact_details.get('phone'), email = contact_details.get('email'))
 
 @app.route('/ordersummary', methods=['GET', 'POST'])
+@login_is_required
+@login_cust
 def ordersummary():
     rest_id = request.args.get('rest_id')
     payment_method = request.args.get('payment_method')
@@ -630,6 +690,8 @@ def ordersummary():
     return redirect(url_for('userdetails'))
 
 @app.route('/delivery_dashboard', methods=['GET', 'POST'])
+@login_is_required
+@login_agent
 def index_deliveryagent():
     agent_id = session.get('agent_ID')
     cur = mysql.connection.cursor()

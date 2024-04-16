@@ -1,3 +1,7 @@
+Uploaded assignment - 4. 
+
+Note: app2.py contains the code with Google authentication implemented.
+      
 # Food Delivery website
 We have developed a food delivery website that allows users to log in or sign up as customers, restaurants, or delivery agents. To launch the website, please follow the steps below.
 1. Clone this repository.

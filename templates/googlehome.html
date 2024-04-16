@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./static/CSS/header.css">
+    <link rel="stylesheet" href="../static/CSS/home.css">
+</head>
+<body>
+    <Header>
+        <div class='landing-header'>
+            <div> 
+            <p class="company-logo">FoodDelivers</p>
+            </div>
+            <div class="cm-header-wrap">
+                <div class="cm-menu-wrap">
+                    <div class="cm-menu-btn fa fa-bars"></div>
+                    <div class="cm-menu-inner">
+                        <ul class="menu-ul clear-all">
+                            <li class="has-child">
+                                <li class="has-child">
+                                    <a href="{{ url_for('aboutus') }}" class='text-wrapper-2 header-button'>About Us</a>
+                                </li>
+                                <li class="has-child">
+                                    <a href="{{ url_for('googlelogin') }}" class='text-wrapper-2 header-button'>Login</a>
+                                </li>
+                                <li class="has-child">
+                                    <a href="{{ url_for('signup') }}" class='text-wrapper-2 header-button'>Signup</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Header>    
+    <section class="Front">
+        <div class="Home-text">
+            <h1 class="Home-heading">Get your Food<br> Delivery at your<br> Doorstep</h1>
+            <p class="Home-para">Check the website and get our ice cream, snacks,<br>
+                drinks, pastries van in 10 minutes.</p>
+            <img src="./static/Assets/Images/food-delivery-rider.png" class="Home-text-img"></img>
+            <a href="{{ url_for('signup') }}"><button class="home-get-started">Get Started</button>    
+        </div>
+        <div class="Home-image-div">
+            <img src="./static/Assets/Images/food-delivery-rider.png" class="home-image"></img>
+        </div>
+    </section>
+</body>
+<script src="loader.js"></script>
+</html>

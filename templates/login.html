@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="../static/CSS/logsign.css" />
   </head>
   <body>
+    {% if msg %}
+    <div class="Incorrect-password">{{ msg }}</div>
+    {% endif %}
     <div class="container">
       <h1>Login</h1>
       <form action="#" method="POST">
@@ -23,7 +26,9 @@
           <option value="Restaurant">Restaurant</option>
         </select>
         <button type="submit">Login</button>
-        <p>Don't have an account <a href="{{ url_for('signup') }}">sign up</a></p>
+        <p>
+          Don't have an account <a href="{{ url_for('signup') }}">sign up</a>
+        </p>
       </form>
     </div>
   </body>

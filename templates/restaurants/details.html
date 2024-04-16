@@ -78,6 +78,9 @@
             <p class="card-text">Cuisine: {{ restaurant_details.cuisine_type }}</p>
             <p class="card-text">Rating: {{ restaurant_details.rating }}</p>
             <p class="card-text">Contact details: {{ restaurant_details.contact_details }}</p>
+            <p class="card-text">bank details: {{ restaurant_details.bank_details }}</p>
+            <p class="card-text">Earnings: {{ restaurant_details.balance_earned }}</p>
+            <p class="card-text">Review: {{ restaurant_details.review }}</p>
         </div>
 
         <h2>Orders</h2>
@@ -123,7 +126,7 @@
                         <p>Orders: {{ food.order_count }}</p>
                         <p>Availability: {{ food.availability }}</p>
                         <p>Vegetarian: {{ food.vegetarian }}</p>
-                        <a href="{{ url_for('edit_menu', item_id=food.item_id) }}" class="btn btn-primary">Edit Menu</a>
+                        <a href="{{ url_for('edit_menu', item_id=food.item_id, rest_id = restaurant_id) }}" class="btn btn-primary">Edit Menu</a>
                         <a href="{{ url_for('delete_item', item_id=food.item_id) }}" class="btn btn-danger">Delete</a>
                     </div>
                 </div>

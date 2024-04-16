@@ -18,7 +18,8 @@ INSERT INTO team_details (roll_number, first_name, last_name, email_id) VALUES
 ('22110162', 'Nikhilesh', 'Myanapuri', 'rajesh.sharma@example.com'),
 ('20110106', 'Shriyash', 'Mandavekar', 'mandavekar.shriyash@iitgn.ac.in'),
 ('20110071', 'Haikoo', 'Khandor', 'haikoo.ashok@iitgn.ac.in'),
-('20110104', 'Madhav', 'Kanda', 'madhav.kanda@iitgn.ac.in');
+('20110104', 'Madhav', 'Kanda', 'madhav.kanda@iitgn.ac.in'),
+('19110009', 'Deep', 'Thakkar', 'deep.st@iitgn.ac.in');
 
 DROP TABLE IF EXISTS Address;
 
@@ -278,26 +279,30 @@ CREATE TABLE Restaurant (
   contact_details JSON,
   timings varchar(50) NOT NULL,
   rating decimal(3,2) DEFAULT NULL,
-  PRIMARY KEY (restaurant_id)
+  bank_details JSON,
+  balance_earned int(100),
+  review varchar(1000),
+  PRIMARY KEY (restaurant_id),
+  editing_menu int(1) DEFAULT 0
 ); 
 
-INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, contact_details, timings, rating)
+INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, contact_details, timings, rating, bank_details, balance_earned, review,editing_menu)
 VALUES
-('password1', 1, 'Taj Mahal Restaurant', 'Indian', '{"email": "tajmahal@example.com", "phone": "+91 9876543210"}', '10:00 AM - 10:00 PM', 4.5),
-('password2', 2, 'Spice Garden', 'Indian', '{"email": "spicegarden@example.com", "phone": "+91 8765432109"}', '11:00 AM - 11:00 PM', 4.2),
-('password3', 3, 'Punjabi Dhaba', 'North Indian', '{"email": "punjabidhaba@example.com", "phone": "+91 7654321098"}', '12:00 PM - 10:30 PM', 4.0),
-('password4', 4, 'Southern Spice', 'South Indian', '{"email": "southernspice@example.com", "phone": "+91 6543210987"}', '11:30 AM - 11:30 PM', 4.4),
-('password5', 5, 'The Mughal Feast', 'Mughlai', '{"email": "mughalfeast@example.com", "phone": "+91 5432109876"}', '12:00 PM - 10:00 PM', 4.7),
-('password6', 6, 'Coastal Curry House', 'Coastal', '{"email": "coastalcurry@example.com", "phone": "+91 4321098765"}', '11:00 AM - 10:30 PM', 4.3),
-('password7', 7, 'Rajasthani Delight', 'Rajasthani', '{"email": "rajasthanidelight@example.com", "phone": "+91 3210987654"}', '12:30 PM - 11:00 PM', 4.6),
-('password8', 8, 'Gujarati Thali', 'Gujarati', '{"email": "gujaratithali@example.com", "phone": "+91 2109876543"}', '11:00 AM - 10:00 PM', 4.1),
-('password9', 9, 'Bengali Bhavan', 'Bengali', '{"email": "bengalibhavan@example.com", "phone": "+91 1098765432"}', '12:00 PM - 10:30 PM', 4.8),
-('password10', 10, 'Hyderabadi Biryani House', 'Hyderabadi', '{"email": "hyderabadibiryani@example.com", "phone": "+91 0987654321"}', '11:30 AM - 11:00 PM', 4.5),
-('password11', 11, 'Kerala Cuisine Corner', 'Kerala', '{"email": "keralacuisine@example.com", "phone": "+91 9876543210"}', '12:00 PM - 10:00 PM', 4.2),
-('password12', 12, 'Maharashtrian Delicacies', 'Maharashtrian', '{"email": "maharashtriandelicacies@example.com", "phone": "+91 8765432109"}', '11:00 AM - 10:30 PM', 4.7),
-('password13', 13, 'Goan Flavors', 'Goan', '{"email": "goanflavors@example.com", "phone": "+91 7654321098"}', '12:30 PM - 11:00 PM', 4.4),
-('password14', 14, 'Parsi Paradise', 'Parsi', '{"email": "parsiparadise@example.com", "phone": "+91 6543210987"}', '11:00 AM - 10:00 PM', 4.6),
-('password15', 15, 'Assamese Aroma', 'Assamese', '{"email": "assamesearoma@example.com", "phone": "+91 5432109876"}', '12:00 PM - 10:30 PM', 4.3);
+('password1', 1, 'Taj Mahal Restaurant', 'Indian', '{"email": "tajmahal@example.com", "phone": "+91 9876543210"}', '10:00 AM - 10:00 PM', 4.5, '{"account_no": "1234567890123456789", "IFSC_code": "INDB0000001", "bank_name": "Indian Bank"}', '85', 'Amamzing food! Loved it',0),
+('password2', 2, 'Spice Garden', 'Indian', '{"email": "spicegarden@example.com", "phone": "+91 8765432109"}', '11:00 AM - 11:00 PM', 4.2, '{"account_no": "9876543210123456789", "IFSC_code": "BOIN0000002", "bank_name": "Bank of India"}', '144', 'Very hot staff. The food is okay but the view is good',0),
+('password3', 3, 'Punjabi Dhaba', 'North Indian', '{"email": "punjabidhaba@example.com", "phone": "+91 7654321098"}', '12:00 PM - 10:30 PM', 4.0, '{"account_no": "0123456789012345678", "IFSC_code": "AXIS0000003", "bank_name": "Axis Bank"}','54', 'Good spicy food, but bad refreshments',0),
+('password4', 4, 'Southern Spice', 'South Indian', '{"email": "southernspice@example.com", "phone": "+91 6543210987"}', '11:30 AM - 11:30 PM', 4.4, '{"account_no": "5432109876543210123", "IFSC_code": "KOTA0000004", "bank_name": "Kotak Mahindra Bank"}', '40', 'very good ambience. perfect for first date',0),
+('password5', 5, 'The Mughal Feast', 'Mughlai', '{"email": "mughalfeast@example.com", "phone": "+91 5432109876"}', '12:00 PM - 10:00 PM', 4.7, '{"account_no": "2345678901234567890", "IFSC_code": "HDFC0000005", "bank_name": "HDFC Bank"}', '50', 'needs better music and hygeine',1),
+('password6', 6, 'Coastal Curry House', 'Coastal', '{"email": "coastalcurry@example.com", "phone": "+91 4321098765"}', '11:00 AM - 10:30 PM', 4.3, '{"account_no": "7890123456789012345", "IFSC_code": "YESB0000006", "bank_name": "Yes Bank"}', '62', 'Please kill the karioke',0),
+('password7', 7, 'Rajasthani Delight', 'Rajasthani', '{"email": "rajasthanidelight@example.com", "phone": "+91 3210987654"}', '12:30 PM - 11:00 PM', 4.6, '{"account_no": "1012345678901234567", "IFSC_code": "IDFB0000007", "bank_name": "IDFC First Bank"}', '92', '100% would not reoment',0),
+('password8', 8, 'Gujarati Thali', 'Gujarati', '{"email": "gujaratithali@example.com", "phone": "+91 2109876543"}', '11:00 AM - 10:00 PM', 4.1, '{"account_no": "4567890123456789012", "IFSC_code": "RBLB0000008", "bank_name": "RBL Bank"}', '30', 'lovely food',0),
+('password9', 9, 'Bengali Bhavan', 'Bengali', '{"email": "bengalibhavan@example.com", "phone": "+91 1098765432"}', '12:00 PM - 10:30 PM', 4.8, '{"account_no": "8901234567890123456", "IFSC_code": "INDB0000009", "bank_name": "IndusInd Bank"}', '30', 'no very good vegetarian option',1),
+('password10', 10, 'Hyderabadi Biryani House', 'Hyderabadi', '{"email": "hyderabadibiryani@example.com", "phone": "+91 0987654321"}', '11:30 AM - 11:00 PM', 4.5, '{"account_no": "3456789012345678901", "IFSC_code": "SCBL0000010", "bank_name": "Standard Chartered Bank"}', '30', 'okay okay....',0),
+('password11', 11, 'Kerala Cuisine Corner', 'Kerala', '{"email": "keralacuisine@example.com", "phone": "+91 9876543210"}', '12:00 PM - 10:00 PM', 4.2, '{"account_no": "2345609876543210123", "IFSC_code": "HSBC0000011", "bank_name": "HSBC India"}', '30', 'good for family',0),
+('password12', 12, 'Maharashtrian Delicacies', 'Maharashtrian', '{"email": "maharashtriandelicacies@example.com", "phone": "+91 8765432109"}', '11:00 AM - 10:30 PM', 4.7, '{"account_no": "7890101234567890123", "IFSC_code": "BARO0000012", "bank_name": "Bank of Baroda"}', '30', 'Not coming back ever',0),
+('password13', 13, 'Goan Flavors', 'Goan', '{"email": "goanflavors@example.com", "phone": "+91 7654321098"}', '12:30 PM - 11:00 PM', 4.4, '{"account_no": "1234509876543210123", "IFSC_code": "CENB0000013", "bank_name": "Central Bank of India"}', '30', 'Very rude staff',1),
+('password14', 14, 'Parsi Paradise', 'Parsi', '{"email": "parsiparadise@example.com", "phone": "+91 6543210987"}', '11:00 AM - 10:00 PM', 4.6, '{"account_no": "5678901234567890123", "IFSC_code": "PUNB0000014", "bank_name": "Punjab National Bank"}', '30', 'Tipped extra... very good service',0),
+('password15', 15, 'Assamese Aroma', 'Assamese', '{"email": "assamesearoma@example.com", "phone": "+91 5432109876"}', '12:00 PM - 10:30 PM', 4.3, '{"account_no": "9012345678901234567", "IFSC_code": "MAHB0000015", "bank_name": "Bank of Maharashtra"}', '30', 'ugly and fat staff',0);
 
 DROP TABLE IF EXISTS Restaurant_Address;
 

@@ -49,8 +49,12 @@
     <div class="apology">
         Apology for the inconvenience caused.
     </div>
-    <a href="http://127.0.0.1:5000/dashboard" class="btn btn-secondary">Back to Main page</a>
+    <button onclick="goBack()" class="btn btn-secondary">Back to Main page</button>
 </div>
-
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
 </body>
 </html>

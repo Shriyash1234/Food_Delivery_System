@@ -18,7 +18,7 @@ import google.auth.transport.requests
 # import MySQLdb
 
 app = Flask(__name__,static_url_path="/static")
-app.secret_key = "client secret"
+app.secret_key = "secret_key"
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'sriroot'
@@ -27,7 +27,7 @@ mysql = MySQL(app)
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1" # to allow Http traffic for local dev
 
-GOOGLE_CLIENT_ID = "client id"
+GOOGLE_CLIENT_ID = "google client"
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client.json")
 
 flow = Flow.from_client_secrets_file(
@@ -40,22 +40,8 @@ flow = Flow.from_client_secrets_file(
 # except MySQLdb.Error as e:
 #     print(f"Error connecting to MySQL: {e}")
 #     # Handle error accordingly, maybe retry connection or exit the application
-def login_is_required(function):
-    def wrapper(*args, **kwargs):
-        if "google_id" not in session:
-            return abort(401)  # Authorization required
-        else:
-            return function()
 
-    return wrapper
 
-def google_login_required(function):
-    def wrapper(*args, **kwargs):
-        if "google_id" not in session:
-            return abort(401)  # Authorization required
-        else:
-            return function(*args, **kwargs)
-    return wrapper
 @app.route("/callback")
 def callback():
     flow.fetch_token(authorization_response=request.url)
@@ -91,13 +77,8 @@ def logout():
     return redirect("/")
 
 @app.route("/protected_area")
-@login_is_required
 def protected_area():
     return f"Hello {session['name']}! <br/> <a href='/logout'><button>Logout</button></a>"
-
-
-
-
 # login for all
 @app.route('/login',methods=['GET', 'POST'])
 def login():
@@ -113,7 +94,8 @@ def login():
                 msg = "Single Quote (') is not allowed in username field."
                 flask.flash(msg)
                 return redirect(url_for('login'))
-            cursor.execute("SELECT * FROM Customers WHERE contact_details->>'$.email' = %s AND password = %s", (useremail, password,))
+            # cursor.execute("SELECT * FROM Customers WHERE contact_details->>'$.email' = %s AND password = %s", (useremail, password,))
+            cursor.execute("SELECT * FROM Customers WHERE contact_details->>'$.email' = '" + str(useremail) + "' AND password = '" + str(password) + "'")
             account = cursor.fetchone()
             if account:
                 session['customerbool'] = True
@@ -679,4 +661,3 @@ def aboutus():
 
 if __name__ == '__main__':
     app.run(debug=True)
-

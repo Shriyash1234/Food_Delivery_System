@@ -199,7 +199,7 @@ def signupcustomer():
             dob = datetime.strptime(DOB, '%Y-%m-%d')
             age = (datetime.now() - dob).days // 365
 
-            cur.execute("INSERT INTO customers(customer_id, first_name, middle_name, last_name, dob, age, contact_details, password) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,firstname,middle_name,lastname,DOB,age,json.dumps({'email': email, 'phone_number': phone_number}),password))
+            cur.execute("INSERT INTO customers(customer_id, first_name, middle_name, last_name, dob, age, contact_details, password) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,firstname,middle_name,lastname,DOB,age,json.dumps({'email': email, 'phone': phone_number}),password))
             cur.execute("INSERT INTO Customer_Address (customer_id, address_id) VALUES (%s,%s)",(ID,address_ID))
             mysql.connection.commit()
         except:
@@ -241,7 +241,7 @@ def signuprestaurants():
                 cur.execute("INSERT INTO Address (address_id, building_name, street, pin_code, city, state) VALUES (%s,%s,%s,%s,%s,%s)",(address_ID,building_name,street_name,pin_code,city,state))
             else:
                 address_ID = address_ID[0]
-            cur.execute("INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, contact_details, timings, rating) VALUES (%s,%s,%s,%s,%s,%s,%s)",(password,ID,restaurant_name,cuisine_type,json.dumps({'email': email, 'phone_number': phone_number}),timings,0))
+            cur.execute("INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, contact_details, timings, rating) VALUES (%s,%s,%s,%s,%s,%s,%s)",(password,ID,restaurant_name,cuisine_type,json.dumps({'email': email, 'phone': phone_number}),timings,0))
             cur.execute("INSERT INTO Restaurant_Address (restaurant_id, address_id) VALUES (%s,%s)",(ID,address_ID))
             mysql.connection.commit()
         except:
@@ -661,7 +661,7 @@ def aboutus():
     cur.execute(sql_query, ("team_details",))
     col_names = cur.fetchall()
 
-    table ={'col1':col_names[0][0],'col2':col_names[1][0],'col3':col_names[2][0],'col4':col_names[3][0],}
+    table ={'col1':col_names[4][0],'col2':col_names[5][0],'col3':col_names[6][0],'col4':col_names[7][0],}
     sql_query = f"SELECT `{table['col1']}`, `{table['col2']}`, `{table['col3']}`, `{table['col4']}` FROM `team_details`;"
     cur.execute(sql_query)
     students = cur.fetchall()

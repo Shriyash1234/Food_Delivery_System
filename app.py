@@ -256,6 +256,13 @@ def signout():
 
 @app.route('/')
 def home():
+    session.pop('customer_id', None)
+    session.pop('restaurant_ID', None)
+    session.pop('agent_ID', None)
+    session.pop('addr_ID', None)
+    session.pop('customerbool', None)
+    session.pop('restbool', None)
+    session.pop('agentbool', None)
     return render_template('home.html')
 
 @app.route('/dashboard')
@@ -290,7 +297,7 @@ def fetch_food_item_from_database(item_id):
     return food_items
 
 @app.route('/restaurants/<cuisine_type>')
-@login_rest
+@login_cust
 def restaurants_by_cuisine(cuisine_type):
     cur = mysql.connection.cursor()
 
@@ -303,7 +310,7 @@ def restaurants_by_cuisine(cuisine_type):
     return render_template("/customers/restaurants.html", cuisine_type=cuisine_type, restaurants=restaurants)
 
 @app.route('/restaurants/<cuisine_type>/<restaurant_id>')
-@login_rest
+@login_cust
 def restaurant_menu(restaurant_id, cuisine_type):
     cur = mysql.connection.cursor()
     cur.execute('''

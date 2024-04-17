@@ -1,4 +1,4 @@
-   /* General styles */
+/* General styles */
 body {
   font-family: 'Arial', sans-serif;
   background-color: #f4f7f6;
@@ -48,9 +48,9 @@ input,
 select,
 button {
   display: block;
-  width: 100%;
+  width: calc(100% - 30px); /* Adjusted width */
   padding: 15px;
-  margin: 15px 0;
+  margin: 15px auto; /* Centered with auto margins */
   font-size: 16px;
   border: none;
   border-radius: 30px;
@@ -78,7 +78,8 @@ button:hover {
 /* Signup page styles */
 .cards {
   display: flex;
-  justify-content: space-evenly;
+  flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
+  justify-content: center; /* Center cards horizontally */
   margin-top: 60px;
 }
 
@@ -89,7 +90,8 @@ button:hover {
   border-radius: 20px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
-  margin: 20px;
+  margin: 10px; /* Decreased margin for better spacing */
+  max-width: 300px; /* Limit card width */
 }
 
 .card:hover {
@@ -119,6 +121,7 @@ button:hover {
 .card a:hover {
   background: linear-gradient(to right, #0062cc, #0056b3);
 }
-.sign-up-img{
+
+.sign-up-img {
   width: 100px;
 }

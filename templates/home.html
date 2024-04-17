@@ -1,9 +1,9 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./static/CSS/header.css">
     <link rel="stylesheet" href="../static/CSS/home.css">
 </head>
@@ -15,18 +15,17 @@
             </div>
             <div class="cm-header-wrap">
                 <div class="cm-menu-wrap">
-                    <div class="cm-menu-btn fa fa-bars"></div>
-                    <div class="cm-menu-inner">
+                    <div class="cm-menu-btn fa fa-bars" onclick="toggleMenu()"></div>
+                    <div class="cm-menu-inner" id="menuItems">
                         <ul class="menu-ul clear-all">
                             <li class="has-child">
-                                <li class="has-child">
-                                    <a href="{{ url_for('aboutus') }}" class='text-wrapper-2 header-button'>About us</a>
-                                </li>
-                                <li class="has-child">
-                                    <a href="{{ url_for('login') }}" class='text-wrapper-2 header-button'>Login</a>
-                                </li>
-                                <li class="has-child">
-                                    <a href="{{ url_for('signup') }}" class='text-wrapper-2 header-button'>Signup</a>
+                                <a href="{{ url_for('aboutus') }}" class='text-wrapper-2 header-button'>About us</a>
+                            </li>
+                            <li class="has-child">
+                                <a href="{{ url_for('login') }}" class='text-wrapper-2 header-button'>Login</a>
+                            </li>
+                            <li class="has-child">
+                                <a href="{{ url_for('signup') }}" class='text-wrapper-2 header-button'>Signup</a>
                             </li>
                         </ul>
                     </div>
@@ -46,6 +45,16 @@
             <img src="./static/Assets/Images/food-delivery-rider.png" class="home-image"></img>
         </div>
     </section>
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("menuItems");
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
+        }
+    </script>
 </body>
 <script src="loader.js"></script>
 </html>

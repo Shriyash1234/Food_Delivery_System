@@ -63,58 +63,67 @@
         margin-bottom: 50px;
       }
       .btn-back {
-        background-color: #555; /* Dark grey color */
-        color: #fff; /* White text color */
-        padding: 10px 20px; /* Adjust padding as needed */
-        border: none; /* Remove default button border */
-        border-radius: 5px; /* Optional: Add rounded corners */
-        text-decoration: none; /* Remove default link underline */
-        display: inline-block; /* Ensure proper button display */
-        margin-top: 40px;
-        margin-left: 20px;
+        background-color: #555;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        display: block;
+        margin: 20px auto;
+        width: 100%;
+        max-width: 200px;
       }
     </style>
   </head>
   <body>
     <a href="http://127.0.0.1:5000" class="btn-back">Log Out</a>
     <div class="container">
-        <div class="restaurant-card">
-            <h2>{{ restaurant_details.restaurant_name }}</h2>
-            <p class="card-text">Cuisine: {{ restaurant_details.cuisine_type }}</p>
-            <p class="card-text">Rating: {{ restaurant_details.rating }}</p>
-            <p class="card-text">Contact details: {{ restaurant_details.contact_details }}</p>
-            <p class="card-text">bank details: {{ restaurant_details.bank_details }}</p>
-            <p class="card-text">Earnings: {{ restaurant_details.balance_earned }}</p>
-            <p class="card-text">Review: {{ restaurant_details.review }}</p>
-        </div>
+      <div class="restaurant-card">
+        <h2>{{ restaurant_details.restaurant_name }}</h2>
+        <p class="card-text">Cuisine: {{ restaurant_details.cuisine_type }}</p>
+        <p class="card-text">Rating: {{ restaurant_details.rating }}</p>
+        <p class="card-text">
+          Contact details: {{ restaurant_details.contact_details }}
+        </p>
+        <p class="card-text">
+          bank details: {{ restaurant_details.bank_details }}
+        </p>
+        <p class="card-text">
+          Earnings: {{ restaurant_details.balance_earned }}
+        </p>
+        <p class="card-text">Review: {{ restaurant_details.review }}</p>
+      </div>
 
       <h2>Orders</h2>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Item Names</th>
-            <th>Item Quantities</th>
-            <th>Notes</th>
-            <th>Order Status</th>
-            <th>Placed Time</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for order in order_details %}
-          <tr>
-            <td>{{ order.order_id }}</td>
-            <td>{{ order.item_names }}</td>
-            <td>{{ order.item_quantities }}</td>
-            <td>{{ order.notes }}</td>
-            <td>{{ order.order_status }}</td>
-            <td>{{ order.placed_time }}</td>
-            <td>{{ order.amount }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Item Names</th>
+              <th>Item Quantities</th>
+              <th>Notes</th>
+              <th>Order Status</th>
+              <th>Placed Time</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in order_details %}
+            <tr>
+              <td>{{ order.order_id }}</td>
+              <td>{{ order.item_names }}</td>
+              <td>{{ order.item_quantities }}</td>
+              <td>{{ order.notes }}</td>
+              <td>{{ order.order_status }}</td>
+              <td>{{ order.placed_time }}</td>
+              <td>{{ order.amount }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
 
       <div class="my-5">
         <h2>Menu</h2>
@@ -147,6 +156,5 @@
         </div>
       </div>
     </div>
-    
   </body>
 </html>

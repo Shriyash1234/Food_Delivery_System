@@ -110,7 +110,8 @@
       <a href="{{ url_for('userdetails') }}" class="user-profile-button"
         >User Profile</a
       >
-      <a href="{{ url_for('signout') }}" class="signout-button">Sign Out</a>
+      <!-- <a href="{{ url_for('signout') }}" class="signout-button">Sign Out</a> -->
+      <button onclick="goBack()" class="signout-button">Sign Out</button>
     </header>
     <div class="mt-16">
       <h2 class="text-3xl font-bold text-center my-4">
@@ -148,6 +149,10 @@
       </ul>
     </footer>
     <script>
+      function goBack() {
+        window.location.href = "/";
+      }
+
       // Set current year dynamically
       document.getElementById("currentYear").textContent =
         new Date().getFullYear();

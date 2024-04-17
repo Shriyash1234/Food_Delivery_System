@@ -236,7 +236,7 @@ def signupdelivery():
         cur.execute("select max(agent_id) from Delivery_Agent")
         ID = cur.fetchone()
         ID = str(int(ID[0]) + 1)
-        cur.insert("INSERT INTO Delivery_Agent (agent_id, vehicle_number, agent_name, phone_num, email, location, license_id, availability) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,vehicle_number,firstname +" "+ middle_name +" "+ lastname,phone_number,email,location,password,1))
+        cur.insert("INSERT INTO Delivery_Agent (agent_id, vehicle_number, agent_name, phone_num, email, location, password, availability) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,vehicle_number,firstname +" "+ middle_name +" "+ lastname,phone_number,email,location,password,1))
         mysql.connection.commit()
         flask.flash('Delivery Agent successfully registered')
         return redirect(url_for('login'))

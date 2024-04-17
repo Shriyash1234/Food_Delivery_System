@@ -6,6 +6,11 @@
     <title>About Us</title>
     <link rel="stylesheet" href="../static/CSS/header.css" />
     <link rel="stylesheet" href="../static/CSS/aboutus.css" />
+    <style>
+      .cm-menu-btn {
+        font-size: 14px; /* Adjust the font size as desired */
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -15,7 +20,12 @@
         </div>
         <div class="cm-header-wrap">
           <div class="cm-menu-wrap">
-            <div class="cm-menu-btn fa fa-bars"></div>
+            <div
+              class="cm-menu-btn text-wrapper-2 header-button btn btn-secondary mb-3"
+              onclick="goBack()"
+            >
+              Back
+            </div>
             <div class="cm-menu-inner">
               <ul class="menu-ul clear-all">
                 <li class="has-child">

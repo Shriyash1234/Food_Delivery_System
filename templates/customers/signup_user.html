@@ -19,7 +19,17 @@
         />
         <input type="text" name="lastname" placeholder="Last Name" required />
         <input type="email" name="email" placeholder="Email" required />
-        <input type="date" name="DOB" placeholder="Date of Birth" required />
+        <!-- <input type="date" name="DOB" placeholder="Date of Birth" required /> -->
+        <input
+          placeholder="Date Of Birth"
+          class="textbox-n"
+          type="text"
+          name="DOB"
+          onfocus="(this.type='date')"
+          onblur="(this.type='text')"
+          id="date"
+          required
+        />
         <input
           type="text"
           name="phone_number"

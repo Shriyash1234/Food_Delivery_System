@@ -229,6 +229,7 @@ def signupdelivery():
         email = userdetails['email']
         DOB = userdetails['DOB']
         vehicle_number = userdetails['vehicle_number']  
+        l_id = userdetails['license_id']
         phone_number = userdetails['phone_number']
         password = userdetails['password']
         location = userdetails['location']
@@ -236,7 +237,7 @@ def signupdelivery():
         cur.execute("select max(agent_id) from Delivery_Agent")
         ID = cur.fetchone()
         ID = str(int(ID[0]) + 1)
-        cur.execute("INSERT INTO Delivery_Agent (agent_id, vehicle_number, agent_name, phone_num, email, location, password, availability) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,vehicle_number,firstname +" "+ middle_name +" "+ lastname,phone_number,email,location,password,1))
+        cur.execute("INSERT INTO Delivery_Agent (agent_id, vehicle_number, agent_name, phone_num, email, location, password, availability, license_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",(ID,vehicle_number,firstname +" "+ middle_name +" "+ lastname,phone_number,email,location,password,1,l_id))
         mysql.connection.commit()
         flask.flash('Delivery Agent successfully registered')
         return redirect(url_for('login'))
@@ -578,6 +579,10 @@ def index_deliveryagent():
     delivery_data = cur.fetchall()
     delivery_data_columns = [col[0] for col in cur.description]
     delivery = [dict(zip(delivery_data_columns, row)) for row in delivery_data]
+
+    if not delivery:  # If no deliveries found
+        return render_template('delivery/no_deliveries.html')
+    
     for delivery_item in delivery:
         # Fetch customer address
         customer_id = delivery_item['customer_id']

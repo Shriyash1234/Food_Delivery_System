@@ -197,6 +197,9 @@ def signuprestaurants():
         city = userdetails['cityname']
         state = userdetails['statename']
         pin_code = userdetails['pincode']
+        account_number = userdetails['account_number']
+        ifsc_code = userdetails['ifsc_code']
+        bank_name = userdetails['bank_name']
         timings = userdetails['timing']
         cur = mysql.connection.cursor()
         cur.execute("select max(restaurant_id) from Restaurant")
@@ -212,7 +215,7 @@ def signuprestaurants():
                 cur.execute("INSERT INTO Address (address_id, building_name, street, pin_code, city, state) VALUES (%s,%s,%s,%s,%s,%s)",(address_ID,building_name,street_name,pin_code,city,state))
             else:
                 address_ID = address_ID[0]
-            cur.execute("INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, email, phone, timings, rating, balance_earned) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",(password, ID, restaurant_name, cuisine_type, email, phone_number,timings, 0, 0))
+            cur.execute("INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, email, phone, timings, rating, balance_earned, account_no, IFSC_code, bank_name) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(password, ID, restaurant_name, cuisine_type, email, phone_number,timings, 0, 0, account_number, ifsc_code, bank_name))
             cur.execute("INSERT INTO Restaurant_Address (restaurant_id, address_id) VALUES (%s,%s)",(ID,address_ID))
             mysql.connection.commit()
         except:
@@ -350,8 +353,8 @@ def review_submission(restaurant_name, item_name, item_orders, ori_item_rating):
         new_review = request.form['restaurant-review']
         item_rating = request.form['item-rating']
 
-        if ori_item_rating < 1:
-            ori_item_rating = 1
+        if int(item_orders) < 1:
+            item_orders = 1
 
         new_item_rating = (float(ori_item_rating)*int(item_orders) + float(item_rating)) / (int(item_orders) + 1)
         new_item_rating = float(round(new_item_rating, 2))
@@ -366,10 +369,21 @@ def review_submission(restaurant_name, item_name, item_orders, ori_item_rating):
 
         old_review = cur.fetchone()
 
-        if old_review == None:
+        if old_review[0] == None:
             new_restaurant_review = new_review
 
-        new_restaurant_review = old_review[0] + "; " + new_review
+        else:
+            new_restaurant_review = old_review[0] + "; " + new_review
+
+        cur.execute('''
+            SELECT rating
+            FROM Restaurant
+            WHERE restaurant_name = %s
+        ''', (restaurant_name,))
+
+        old_restaurant_rat = cur.fetchone()
+        # print(old_restaurant_rat[0])
+        new_restaurant_rat = (float(old_restaurant_rat[0])*int(item_orders) + float(item_rating)) / (int(item_orders) + 1)
 
         cur.execute('''
             UPDATE Restaurant
@@ -387,6 +401,15 @@ def review_submission(restaurant_name, item_name, item_orders, ori_item_rating):
         ''', (new_item_rating, item_name))
         
         mysql.connection.commit()
+
+        cur.execute('''
+            UPDATE Restaurant
+            SET rating = %s
+            WHERE restaurant_name = %s
+        ''', (new_restaurant_rat, restaurant_name))
+        
+        mysql.connection.commit()
+        
         cur.close()
 
     # Render the review submission template and pass restaurant_id to the template
@@ -462,9 +485,9 @@ def add_item():
         # Insert food item details into the database
         cur = mysql.connection.cursor()
         cur.execute('''
-            INSERT INTO food_item (item_id,item_name, item_price, item_type, vegetarian, availability, restaurant_id)
-            VALUES (%s,%s, %s, %s, %s, %s, %s)
-        ''', (item_ID, item_name, item_price, item_type, vegetarian, availability, restaurant_id))
+            INSERT INTO food_item (item_id,item_name, item_price, item_type, vegetarian, availability, restaurant_id, item_rating)
+            VALUES (%s,%s, %s, %s, %s, %s, %s, %s)
+        ''', (item_ID, item_name, item_price, item_type, vegetarian, availability, restaurant_id, 0))
         mysql.connection.commit()
         
         # Redirect the user back to the menu page after adding the new item
@@ -574,7 +597,7 @@ def userdetails():
             food_item = [dict(zip(food_item_columns, row)) for row in food_item_data]
             food_items.append({'order_id': order_id, 'food_item': food_item[0]})
     
-        print(orders)
+        # print(orders)
     contact_details = json.loads(user[0]['contact_details'])
     return render_template("/customers/userdetails.html", user=user, address=address, orders=orders, food_items=food_items, phone = contact_details.get('phone'), email = contact_details.get('email'))
 

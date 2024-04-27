@@ -350,6 +350,9 @@ def review_submission(restaurant_name, item_name, item_orders, ori_item_rating):
         new_review = request.form['restaurant-review']
         item_rating = request.form['item-rating']
 
+        if ori_item_rating < 1:
+            ori_item_rating = 1
+
         new_item_rating = (float(ori_item_rating)*int(item_orders) + float(item_rating)) / (int(item_orders) + 1)
         new_item_rating = float(round(new_item_rating, 2))
         
@@ -362,6 +365,9 @@ def review_submission(restaurant_name, item_name, item_orders, ori_item_rating):
         ''', (restaurant_name,))
 
         old_review = cur.fetchone()
+
+        if old_review == None:
+            new_restaurant_review = new_review
 
         new_restaurant_review = old_review[0] + "; " + new_review
 

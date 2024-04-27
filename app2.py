@@ -417,6 +417,55 @@ def restaurant_menu(restaurant_id, cuisine_type):
     else:
         return render_template("/customers/menu.html",food_items=food_items,restaurant_name=restaurant_name)
     
+@app.route('/review_submission/<restaurant_name>/<item_name>/<item_orders>/<ori_item_rating>', methods=['GET', 'POST'])
+@login_cust
+def review_submission(restaurant_name, item_name, item_orders, ori_item_rating):
+    if request.method == 'POST':
+        restaurant_name = restaurant_name[22:][:-3]
+        new_review = request.form['restaurant-review']
+        item_rating = request.form['item-rating']
+
+        if ori_item_rating < 1:
+            ori_item_rating = 1
+
+        new_item_rating = (float(ori_item_rating)*int(item_orders) + float(item_rating)) / (int(item_orders) + 1)
+        new_item_rating = float(round(new_item_rating, 2))
+        
+        cur = mysql.connection.cursor()
+
+        cur.execute('''
+            SELECT review
+            FROM Restaurant
+            WHERE restaurant_name = %s
+        ''', (restaurant_name,))
+
+        old_review = cur.fetchone()
+
+        if old_review == None:
+            new_restaurant_review = new_review
+
+        new_restaurant_review = old_review[0] + "; " + new_review
+
+        cur.execute('''
+            UPDATE Restaurant
+            SET review = %s
+            WHERE restaurant_name = %s
+        ''', (new_restaurant_review, restaurant_name))
+
+        mysql.connection.commit()
+
+        # Update the food_item table with the submitted item rating
+        cur.execute('''
+            UPDATE Food_Item
+            SET item_rating = %s
+            WHERE item_name = %s
+        ''', (new_item_rating, item_name))
+        
+        mysql.connection.commit()
+        cur.close()
+
+    # Render the review submission template and pass restaurant_id to the template
+    return render_template("/customers/review_submission.html") 
 
 @app.route('/restaurant')
 @login_rest

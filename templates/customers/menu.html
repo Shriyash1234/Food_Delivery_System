@@ -26,7 +26,7 @@
       <h1 class="text-center mb-4">{{ item.restaurant_name }}</h1>
       {% endfor %}
       <div class="row">
-        {% for food in food_items %}
+        {% for food in food_items %} {% if food.availability > 0 %}
         <div class="col-md-6 col-lg-4">
           <div class="menu-item">
             <h5>{{ food.item_name }}</h5>
@@ -61,7 +61,7 @@
             </button>
           </div>
         </div>
-        {% endfor %}
+        {% endif %} {% endfor %}
       </div>
       <div class="text-center">
         <button class="btn btn-primary" onclick="promptPaymentMethod()">

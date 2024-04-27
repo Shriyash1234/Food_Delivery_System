@@ -291,21 +291,21 @@ CREATE TABLE Restaurant (
 
 INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, email, phone, timings, rating, account_no, IFSC_code, bank_name, balance_earned, review,editing_menu)
 VALUES
-('password1', 1, 'Taj Mahal Restaurant', 'Indian', 'tajmahal@example.com', '+91 9876543210', '10:00 AM - 10:00 PM', 4.5, '1234567890123456789', 'INDB0000001', 'Indian Bank', '85', '1. Amamzing food! 2. Loved it, 3. Will visit again',0),
-('password2', 2, 'Spice Garden', 'Indian', 'spicegarden@example.com', '+91 8765432109', '11:00 AM - 11:00 PM', 4.2, '9876543210123456789', 'BOIN0000002', 'Bank of India', '144', '1. Very hot staff. 2. Very spicy',0),
-('password3', 3, 'Punjabi Dhaba', 'North Indian', 'punjabidhaba@example.com', '+91 7654321098', '12:00 PM - 10:30 PM', 4.0, '0123456789012345678', 'AXIS0000003', 'Axis Bank','54', '1.Good spicy food, 2. Very good refreshments',0),
-('password4', 4, 'Southern Spice', 'South Indian', 'southernspice@example.com', '+91 6543210987', '11:30 AM - 11:30 PM', 4.4, '5432109876543210123', 'KOTA0000004', 'Kotak Mahindra Bank', '40', '1. very good ambience, 2. perfect for first date',0),
-('password5', 5, 'The Mughal Feast', 'Mughlai', 'mughalfeast@example.com', '+91 5432109876', '12:00 PM - 10:00 PM', 4.7, '2345678901234567890', 'HDFC0000005', 'HDFC Bank', '50', '1. Amamzing music and hygeine, 2. will definetly come again',1),
-('password6', 6, 'Coastal Curry House', 'Coastal', 'coastalcurry@example.com', '+91 4321098765', '11:00 AM - 10:30 PM', 4.3, '7890123456789012345', 'YESB0000006', 'Yes Bank', '62', '1. karioke, 2. Amazing cook',0),
-('password7', 7, 'Rajasthani Delight', 'Rajasthani', 'rajasthanidelight@example.com', '+91 3210987654', '12:30 PM - 11:00 PM', 4.6, '1012345678901234567', 'IDFB0000007', 'IDFC First Bank', '92', '1. 100% would recommend, 2. Will come again',0),
+('password1', 1, 'Taj Mahal Restaurant', 'Indian', 'tajmahal@example.com', '+91 9876543210', '10:00 AM - 10:00 PM', 4.5, '1234567890123456789', 'INDB0000001', 'Indian Bank', '85', 'Amamzing food!; Loved it; Will visit again',0),
+('password2', 2, 'Spice Garden', 'Indian', 'spicegarden@example.com', '+91 8765432109', '11:00 AM - 11:00 PM', 4.2, '9876543210123456789', 'BOIN0000002', 'Bank of India', '144', 'Very hot stuff; Very spicy',0),
+('password3', 3, 'Punjabi Dhaba', 'North Indian', 'punjabidhaba@example.com', '+91 7654321098', '12:00 PM - 10:30 PM', 4.0, '0123456789012345678', 'AXIS0000003', 'Axis Bank','54', 'Good spicy food; Very good refreshments',0),
+('password4', 4, 'Southern Spice', 'South Indian', 'southernspice@example.com', '+91 6543210987', '11:30 AM - 11:30 PM', 4.4, '5432109876543210123', 'KOTA0000004', 'Kotak Mahindra Bank', '40', 'very good ambience; perfect for first date',0),
+('password5', 5, 'The Mughal Feast', 'Mughlai', 'mughalfeast@example.com', '+91 5432109876', '12:00 PM - 10:00 PM', 4.7, '2345678901234567890', 'HDFC0000005', 'HDFC Bank', '50', 'Amamzing music and hygeine; will definetly come again',1),
+('password6', 6, 'Coastal Curry House', 'Coastal', 'coastalcurry@example.com', '+91 4321098765', '11:00 AM - 10:30 PM', 4.3, '7890123456789012345', 'YESB0000006', 'Yes Bank', '62', 'karioke; Amazing cook',0),
+('password7', 7, 'Rajasthani Delight', 'Rajasthani', 'rajasthanidelight@example.com', '+91 3210987654', '12:30 PM - 11:00 PM', 4.6, '1012345678901234567', 'IDFB0000007', 'IDFC First Bank', '92', '100% would recommend; Will come again',0),
 ('password8', 8, 'Gujarati Thali', 'Gujarati', 'gujaratithali@example.com', '+91 2109876543', '11:00 AM - 10:00 PM', 4.1, '4567890123456789012', 'RBLB0000008', 'RBL Bank', '30', 'lovely food',0),
-('password9', 9, 'Bengali Bhavan', 'Bengali', 'bengalibhavan@example.com', '+91 1098765432', '12:00 PM - 10:30 PM', 4.8, '8901234567890123456', 'INDB0000009', 'IndusInd Bank', '30', '1.Very good non-vegetarian option, 2. Nice refreshements',1),
-('password10', 10, 'Hyderabadi Biryani House', 'Hyderabadi', 'hyderabadibiryani@example.com"', '+91 0987654321', '11:30 AM - 11:00 PM', 4.5, '3456789012345678901', 'SCBL0000010', 'Standard Chartered Bank', '30', '1.Nice Food, 2. Nice Staff',0),
-('password11', 11, 'Kerala Cuisine Corner', 'Kerala', 'keralacuisine@example.com', '+91 9876543210', '12:00 PM - 10:00 PM', 4.2, '2345609876543210123', 'HSBC0000011', 'HSBC India', '30', '1. Good for family, 2. Good Culture',0),
-('password12', 12, 'Maharashtrian Delicacies', 'Maharashtrian', 'maharashtriandelicacies@example.com', '+91 8765432109', '11:00 AM - 10:30 PM', 4.7, '7890101234567890123', 'BARO0000012', 'Bank of Baroda', '30', '1. Definetly coming back again, 2. Loved it',0),
-('password13', 13, 'Goan Flavors', 'Goan', 'goanflavors@example.com', '+91 7654321098', '12:30 PM - 11:00 PM', 4.4, '1234509876543210123', 'CENB0000013', 'Central Bank of India', '30', '1. Nice staff, 2. Good cook',1),
-('password14', 14, 'Parsi Paradise', 'Parsi', 'parsiparadise@example.com', '+91 6543210987', '11:00 AM - 10:00 PM', 4.6, '5678901234567890123', 'PUNB0000014', 'Punjab National Bank', '30', '1.Tipped extra, 2.Very good service',0),
-('password15', 15, 'Assamese Aroma', 'Assamese', 'assamesearoma@example.com', '+91 5432109876', '12:00 PM - 10:30 PM', 4.3, '9012345678901234567', 'MAHB0000015', 'Bank of Maharashtra', '30', '1.Kind staff, 2. Good Cook',0);
+('password9', 9, 'Bengali Bhavan', 'Bengali', 'bengalibhavan@example.com', '+91 1098765432', '12:00 PM - 10:30 PM', 4.8, '8901234567890123456', 'INDB0000009', 'IndusInd Bank', '30', 'Very good non-vegetarian option; Nice refreshements',1),
+('password10', 10, 'Hyderabadi Biryani House', 'Hyderabadi', 'hyderabadibiryani@example.com"', '+91 0987654321', '11:30 AM - 11:00 PM', 4.5, '3456789012345678901', 'SCBL0000010', 'Standard Chartered Bank', '30', 'Nice Food; Nice Staff',0),
+('password11', 11, 'Kerala Cuisine Corner', 'Kerala', 'keralacuisine@example.com', '+91 9876543210', '12:00 PM - 10:00 PM', 4.2, '2345609876543210123', 'HSBC0000011', 'HSBC India', '30', 'Good for family; Good Culture',0),
+('password12', 12, 'Maharashtrian Delicacies', 'Maharashtrian', 'maharashtriandelicacies@example.com', '+91 8765432109', '11:00 AM - 10:30 PM', 4.7, '7890101234567890123', 'BARO0000012', 'Bank of Baroda', '30', 'Definetly coming back again; Loved it',0),
+('password13', 13, 'Goan Flavors', 'Goan', 'goanflavors@example.com', '+91 7654321098', '12:30 PM - 11:00 PM', 4.4, '1234509876543210123', 'CENB0000013', 'Central Bank of India', '30', 'Nice staff; Good cook',1),
+('password14', 14, 'Parsi Paradise', 'Parsi', 'parsiparadise@example.com', '+91 6543210987', '11:00 AM - 10:00 PM', 4.6, '5678901234567890123', 'PUNB0000014', 'Punjab National Bank', '30', 'Tipped extra; Very good service',0),
+('password15', 15, 'Assamese Aroma', 'Assamese', 'assamesearoma@example.com', '+91 5432109876', '12:00 PM - 10:30 PM', 4.3, '9012345678901234567', 'MAHB0000015', 'Bank of Maharashtra', '30', 'Kind staff; Good Cook',0);
 
 DROP TABLE IF EXISTS Restaurant_Address;
 

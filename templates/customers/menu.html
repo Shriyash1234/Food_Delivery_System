@@ -15,6 +15,12 @@
         border: 1px solid #ddd;
         border-radius: 5px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      .submit-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
       }
     </style>
   </head>
@@ -29,6 +35,12 @@
         {% for food in food_items %} {% if food.availability > 0 %}
         <div class="col-md-6 col-lg-4">
           <div class="menu-item">
+            <a
+              class="btn btn-primary submit-button"
+              href="{{ url_for('review_submission', restaurant_name = restaurant_name, item_name = food.item_name, item_orders = food.order_count, ori_item_rating = food.item_rating )}}"
+            >
+              Submit Review
+            </a>
             <h5>{{ food.item_name }}</h5>
             <p>Price: {{ food.item_price }}</p>
             <p>Rating: {{ food.item_rating }}</p>

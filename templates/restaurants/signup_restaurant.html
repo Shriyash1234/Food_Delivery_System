@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="../static/CSS/signup.css" />
   </head>
   <body>
+    {% if msg %}
+    <div class="psact">{{ msg }}</div>
+    {% endif %}
     <div class="container">
       <h1>Restaurant Signup</h1>
       <form action="#" method="POST" id="restaurantSignupForm">
@@ -16,12 +19,13 @@
           placeholder="Restaurant Name"
           required
         />
-        <input
+        <!-- <input
           type="text"
           name="cuisine_type"
           placeholder="Cuisine Type"
           required
-        />
+        /> -->
+
         <input type="email" name="email" placeholder="Email" required />
         <input
           type="tel"
@@ -51,6 +55,23 @@
         <input type="text" name="statename" placeholder="State" required />
         <input type="text" name="pincode" placeholder="Pin Code" required />
         <input type="text" name="timing" placeholder="Timings" required />
+        <select name="cuisine_type">
+          <option value="null">Select Cuisine Type</option>
+          <option value="Indian">Indian</option>
+          <option value="North Indian">North Indian</option>
+          <option value="South Indian">South Indian</option>
+          <option value="Mughlai">Mughlai</option>
+          <option value="Coastal">Coastal</option>
+          <option value="Rajasthani">Rajasthani</option>
+          <option value="Gujarati">Gujarati</option>
+          <option value="Bengali">Bengali</option>
+          <option value="Hyderabadi">Hyderabadi</option>
+          <option value="Kerala">Kerala</option>
+          <option value="Maharashtrian">Maharashtrian</option>
+          <option value="Goan">Goan</option>
+          <option value="Parsi">Parsi</option>
+          <option value="Assamese">Assamese</option>
+        </select>
         <button type="submit">Sign Up</button>
       </form>
     </div>

@@ -84,10 +84,19 @@
         <p class="card-text">Cuisine: {{ restaurant_details.cuisine_type }}</p>
         <p class="card-text">Rating: {{ restaurant_details.rating }}</p>
         <p class="card-text">
-          Contact details: {{ restaurant_details.contact_details }}
+          <h4>
+            Contact Details:
+          </h4> 
+          email: {{ restaurant_details.email }}<br>
+          Phone Number: {{ restaurant_details.phone }}
         </p>
         <p class="card-text">
-          bank details: {{ restaurant_details.bank_details }}
+          <h4>
+            Bank Details:
+          </h4> 
+          Account Number: {{ restaurant_details.account_no}} <br>
+          IFSC CODE: {{ restaurant_details.IFSC_code}}<br>
+          Bank Name: {{ restaurant_details.bank_name }}
         </p>
         <p class="card-text">
           Earnings: {{ restaurant_details.balance_earned }}

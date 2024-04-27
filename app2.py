@@ -182,7 +182,7 @@ def login():
                 time.sleep(2)
                 msg = 'Incorrect username / password !'
         elif (authority == "Restaurant"):
-            cursor.execute("SELECT * FROM Restaurant WHERE contact_details->>'$.email' = %s AND password = %s", (useremail, password, ))
+            cursor.execute("SELECT * FROM Restaurant WHERE email = %s AND password = %s", (useremail, password, ))
             # cursor.execute(f"SELECT * FROM restaurant WHERE email='{useremail}' AND password='{password}'")
             account = cursor.fetchone()
             if account:
@@ -258,6 +258,12 @@ def signuprestaurants():
         userdetails = request.form
         restaurant_name = userdetails['restaurant_name']
         cuisine_type = userdetails['cuisine_type']
+
+        if cuisine_type == "null":
+            msg = 'Please select a cuisine type'
+            flask.flash(msg)
+            return render_template('/restaurants/signup_restaurant.html', msg = msg)
+    
         email = userdetails['email']
         phone_number = userdetails['phone_number']
         password = userdetails['password']
@@ -281,7 +287,7 @@ def signuprestaurants():
                 cur.execute("INSERT INTO Address (address_id, building_name, street, pin_code, city, state) VALUES (%s,%s,%s,%s,%s,%s)",(address_ID,building_name,street_name,pin_code,city,state))
             else:
                 address_ID = address_ID[0]
-            cur.execute("INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, contact_details, timings, rating) VALUES (%s,%s,%s,%s,%s,%s,%s)",(password,ID,restaurant_name,cuisine_type,json.dumps({'email': email, 'phone_number': phone_number}),timings,0))
+            cur.execute("INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, email, phone, timings, rating, balance_earned) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",(password, ID, restaurant_name, cuisine_type, email, phone_number,timings, 0, 0))
             cur.execute("INSERT INTO Restaurant_Address (restaurant_id, address_id) VALUES (%s,%s)",(ID,address_ID))
             mysql.connection.commit()
         except:

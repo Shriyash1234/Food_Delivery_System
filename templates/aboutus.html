@@ -1,118 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About Us</title>
-    <link rel="stylesheet" href="../static/CSS/header.css">
-    <link rel="stylesheet" href="../static/CSS/aboutus.css">
-</head>
-<body>
-    <Header>
-        <div class='landing-header'>
-            <div> 
-                <p class="company-logo">FoodDelivers</p>
-            </div>
-            <div class="cm-header-wrap">
-                <div class="cm-menu-wrap">
-                    <div class="cm-menu-btn fa fa-bars"></div>
-                    <div class="cm-menu-inner">
-                        <ul class="menu-ul clear-all">
-                            <li class="has-child">
-                                <button onclick="goBack()" class="text-wrapper-2 header-button btn btn-secondary mb-3">Back</button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+    <link rel="stylesheet" href="../static/CSS/header.css" />
+    <link rel="stylesheet" href="../static/CSS/aboutus.css" />
+    <style>
+      .cm-menu-btn {
+        font-size: 14px; /* Adjust the font size as desired */
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="landing-header">
+        <div>
+          <p class="company-logo">FoodDelivers</p>
         </div>
-    </Header>
+        <div class="cm-header-wrap">
+          <div class="cm-menu-wrap">
+            <div
+              class="cm-menu-btn text-wrapper-2 header-button btn btn-secondary mb-3"
+              onclick="goBack()"
+            >
+              Back
+            </div>
+            <div class="cm-menu-inner">
+              <ul class="menu-ul clear-all">
+                <li class="has-child">
+                  <button
+                    onclick="goBack()"
+                    class="text-wrapper-2 header-button btn btn-secondary mb-3"
+                  >
+                    Back
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
 
     <section class="About">
-        <div class="about-us-section">
-            <div class="about-us-heading">
-                <h2>About Us</h2>
-                <p>Welcome aboard our food delivery app, where convenience meets culinary delight! Our team is driven by a passion for great food and customer satisfaction. We understand the hustle and bustle of modern life, leaving little time for cooking, which is why we're committed to bringing the best dining experiences right to your doorstep. With our user-friendly interface, ordering from your go-to restaurants has never been smoother. Whether it's a quick bite from your local diner or a special treat from a renowned chain, we've got you covered. Our diverse selection of eateries ensures there's something to please every palate. And with our efficient delivery service, you can enjoy restaurant-quality meals in the comfort of your own home. So sit back, relax, and let us take care of your cravings. With our food delivery app, delicious meals are just a few taps away.</p>
-            </div>
-
-            <div class="partner-executives">
-                <div class="partner">
-                    <div class="partner-count">10+</div>
-                    <p>Restaurant Partners</p>
-                </div>
-                <div class="partner">
-                    <div class="partner-count">10+</div>
-                    <p>Happy Customers</p>
-                </div>
-                <div class="partner">
-                    <div class="partner-count">10+</div>
-                    <p>Delivery Executives</p>
-                </div>
-            </div>
-            
-
-
-    </div>
-
-    <div1 class="About">
-        <div class="About">
-            <br>
-            <h2 class="text-center mb-3">Team Details</h2>
-            <hr>    
-            <div class="Team-members">
-                <table class="team-table">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>{{table['col1']}}</th>
-                            <th>{{table['col2']}}</th>
-                            <th>{{table['col3']}}</th>
-                            <th>{{table['col4']}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for student in student_details %}
-                        <tr>
-                            <td>{{student['col1']}}</td>
-                            <td>{{student['col2']}}</td>
-                            <td>{{student['col3']}}</td>
-                            <td>{{student['col4']}}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+      <div class="about-us-section">
+        <div class="about-us-heading">
+          <h2>About Us</h2>
+          <p>
+            Welcome aboard our food delivery app, where convenience meets
+            culinary delight! Our team is driven by a passion for great food and
+            customer satisfaction. We understand the hustle and bustle of modern
+            life, leaving little time for cooking, which is why we're committed
+            to bringing the best dining experiences right to your doorstep. With
+            our user-friendly interface, ordering from your go-to restaurants
+            has never been smoother. Whether it's a quick bite from your local
+            diner or a special treat from a renowned chain, we've got you
+            covered. Our diverse selection of eateries ensures there's something
+            to please every palate. And with our efficient delivery service, you
+            can enjoy restaurant-quality meals in the comfort of your own home.
+            So sit back, relax, and let us take care of your cravings. With our
+            food delivery app, delicious meals are just a few taps away.
+          </p>
         </div>
 
-        <br>
-        <hr>
+        <div class="partner-executives">
+          <div class="partner">
+            <div class="partner-count">10+</div>
+            <p>Restaurant Partners</p>
+          </div>
+          <div class="partner">
+            <div class="partner-count">10+</div>
+            <p>Happy Customers</p>
+          </div>
+          <div class="partner">
+            <div class="partner-count">10+</div>
+            <p>Delivery Executives</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="About">
+        <br />
+        <h2 class="text-center mb-3">Team Details</h2>
+        <hr />
+        <div class="table-container">
+          <div class="table-scroll">
+            <table class="team-table">
+              <thead class="thead-dark">
+                <tr>
+                  <th>{{table['col1']}}</th>
+                  <th>{{table['col2']}}</th>
+                  <th>{{table['col3']}}</th>
+                  <th>{{table['col4']}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for student in student_details %}
+                <tr>
+                  <td>{{student['col1']}}</td>
+                  <td>{{student['col2']}}</td>
+                  <td>{{student['col3']}}</td>
+                  <td>{{student['col4']}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <br />
+        <hr />
         <div class="container">
-            <form role="search" method="POST">
-                <div class="row">
-                    <div class="co-md-4">
-                        <div class="input-group mb-3">
-                            <label class="input-group-text" for="inputGroupSelect01">Column to rename</label>
-                            <select class="form-select" id="inputGroupSelect01" name="col_name">
-                                <option>{{table['col1']}}</option>
-                                <option>{{table['col2']}}</option>
-                                <option>{{table['col3']}}</option>
-                                <option>{{table['col4']}}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <input class="form-control me-2" type="search" placeholder="Column Name" aria-label="Column Name" name="new_name" value="">
-                    </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-outline-primary" type="submit">Rename Column Name</button>
-                    </div>
+          <form role="search" method="POST">
+            <div class="row">
+              <div class="co-md-4">
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="inputGroupSelect01"
+                    >Column to rename</label
+                  >
+                  <select
+                    class="form-select"
+                    id="inputGroupSelect01"
+                    name="col_name"
+                  >
+                    <option>{{table['col1']}}</option>
+                    <option>{{table['col2']}}</option>
+                    <option>{{table['col3']}}</option>
+                    <option>{{table['col4']}}</option>
+                  </select>
                 </div>
-            </form>
+              </div>
+              <div class="col-md-4">
+                <input
+                  class="form-control me-2"
+                  type="search"
+                  placeholder="Column Name"
+                  aria-label="Column Name"
+                  name="new_name"
+                  value=""
+                />
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-outline-primary" type="submit">
+                  Rename Column Name
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
-    </div1>            
+      </div>
+    </section>
+
     <script>
-        function goBack() {
-          window.history.back();
-        }
+      function goBack() {
+        window.history.back();
+      }
     </script>
-</body>
+  </body>
 </html>

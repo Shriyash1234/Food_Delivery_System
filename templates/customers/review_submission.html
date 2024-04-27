@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Review Submission</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      form {
+        max-width: 400px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #666;
+      }
+      textarea,
+      input[type="number"],
+      input[type="submit"],
+      .back-button {
+        width: calc(
+          100% - 20px
+        ); /* Adjusted width to fit within the form's padding */
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+      input[type="submit"] {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+      .back-button {
+        width: 100px; /* Adjusted width to make it smaller */
+        margin: 0 auto; /* Centered horizontally */
+        display: block; /* Displayed as a block element */
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+      .back-button:hover {
+        background-color: #2980b9;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Review Submission</h1>
+    <form action="#" method="POST" id="reviewSubmissionForm">
+      <label for="restaurant-review">Restaurant Review:</label><br />
+      <textarea
+        id="restaurant-review"
+        name="restaurant-review"
+        rows="4"
+        cols="50"
+      ></textarea
+      ><br /><br />
+      <label for="item-rating">Item Rating (out of 5):</label><br />
+      <input
+        type="number"
+        id="item-rating"
+        name="item-rating"
+        min="1"
+        max="5"
+      /><br /><br />
+      <input type="submit" value="Submit Review" />
+    </form>
+    <button onclick="goBack()" class="back-button">Back</button>
+    <script>
+      document
+        .getElementById("reviewSubmissionForm")
+        .addEventListener("submit", function (event) {
+          // Form submission is intercepted here
+          // You can add code to send the form data to the server if needed
+          // After submission, go back to the previous page
+          window.history.back();
+        });
+
+      function goBack() {
+        window.history.go(-2);
+      }
+    </script>
+  </body>
+</html>

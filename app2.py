@@ -182,7 +182,7 @@ def login():
                 time.sleep(2)
                 msg = 'Incorrect username / password !'
         elif (authority == "Restaurant"):
-            cursor.execute("SELECT * FROM Restaurant WHERE contact_details->>'$.email' = %s AND password = %s", (useremail, password, ))
+            cursor.execute("SELECT * FROM Restaurant WHERE email = %s AND password = %s", (useremail, password, ))
             # cursor.execute(f"SELECT * FROM restaurant WHERE email='{useremail}' AND password='{password}'")
             account = cursor.fetchone()
             if account:
@@ -258,6 +258,12 @@ def signuprestaurants():
         userdetails = request.form
         restaurant_name = userdetails['restaurant_name']
         cuisine_type = userdetails['cuisine_type']
+
+        if cuisine_type == "null":
+            msg = 'Please select a cuisine type'
+            flask.flash(msg)
+            return render_template('/restaurants/signup_restaurant.html', msg = msg)
+    
         email = userdetails['email']
         phone_number = userdetails['phone_number']
         password = userdetails['password']
@@ -266,6 +272,9 @@ def signuprestaurants():
         city = userdetails['cityname']
         state = userdetails['statename']
         pin_code = userdetails['pincode']
+        account_number = userdetails['account_number']
+        ifsc_code = userdetails['ifsc_code']
+        bank_name = userdetails['bank_name']
         timings = userdetails['timing']
         cur = mysql.connection.cursor()
         cur.execute("select max(restaurant_id) from Restaurant")
@@ -281,7 +290,7 @@ def signuprestaurants():
                 cur.execute("INSERT INTO Address (address_id, building_name, street, pin_code, city, state) VALUES (%s,%s,%s,%s,%s,%s)",(address_ID,building_name,street_name,pin_code,city,state))
             else:
                 address_ID = address_ID[0]
-            cur.execute("INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, contact_details, timings, rating) VALUES (%s,%s,%s,%s,%s,%s,%s)",(password,ID,restaurant_name,cuisine_type,json.dumps({'email': email, 'phone_number': phone_number}),timings,0))
+            cur.execute("INSERT INTO Restaurant (password, restaurant_id, restaurant_name, cuisine_type, email, phone, timings, rating, balance_earned, account_no, IFSC_code, bank_name) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(password, ID, restaurant_name, cuisine_type, email, phone_number,timings, 0, 0, account_number, ifsc_code, bank_name))
             cur.execute("INSERT INTO Restaurant_Address (restaurant_id, address_id) VALUES (%s,%s)",(ID,address_ID))
             mysql.connection.commit()
         except:
@@ -311,7 +320,7 @@ def signupdelivery():
         cur.execute("select max(agent_id) from Delivery_Agent")
         ID = cur.fetchone()
         ID = str(int(ID[0]) + 1)
-        cur.insert("INSERT INTO Delivery_Agent (agent_id, vehicle_number, agent_name, phone_num, email, location, license_id, availability) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,vehicle_number,firstname +" "+ middle_name +" "+ lastname,phone_number,email,location,password,1))
+        cur.execute("INSERT INTO Delivery_Agent (agent_id, vehicle_number, agent_name, phone_num, email, location, password, availability) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(ID,vehicle_number,firstname +" "+ middle_name +" "+ lastname,phone_number,email,location,password,1))
         mysql.connection.commit()
         flask.flash('Delivery Agent successfully registered')
         return redirect(url_for('login'))
@@ -403,7 +412,7 @@ def restaurant_menu(restaurant_id, cuisine_type):
     WHERE restaurant.restaurant_id = %s
     ''', (restaurant_id))
     restaurant_name_data = cur.fetchall()
-    print(restaurant_name_data)
+    # print(restaurant_name_data)
     restaurant_name_columns = [col[0] for col in cur.description]
     restaurant_name = [dict(zip(restaurant_name_columns, row)) for row in restaurant_name_data]
     if(restaurant_name_data[0][1]):
@@ -411,6 +420,75 @@ def restaurant_menu(restaurant_id, cuisine_type):
     else:
         return render_template("/customers/menu.html",food_items=food_items,restaurant_name=restaurant_name)
     
+@app.route('/review_submission/<restaurant_name>/<item_name>/<item_orders>/<ori_item_rating>', methods=['GET', 'POST'])
+@login_cust
+def review_submission(restaurant_name, item_name, item_orders, ori_item_rating):
+    if request.method == 'POST':
+        restaurant_name = restaurant_name[22:][:-3]
+        new_review = request.form['restaurant-review']
+        item_rating = request.form['item-rating']
+
+        if int(item_orders) < 1:
+            item_orders = 1
+
+        new_item_rating = (float(ori_item_rating)*int(item_orders) + float(item_rating)) / (int(item_orders) + 1)
+        new_item_rating = float(round(new_item_rating, 2))
+        
+        cur = mysql.connection.cursor()
+
+        cur.execute('''
+            SELECT review
+            FROM Restaurant
+            WHERE restaurant_name = %s
+        ''', (restaurant_name,))
+
+        old_review = cur.fetchone()
+
+        if old_review[0] == None:
+            new_restaurant_review = new_review
+
+        else:
+            new_restaurant_review = old_review[0] + "; " + new_review
+
+        cur.execute('''
+            SELECT rating
+            FROM Restaurant
+            WHERE restaurant_name = %s
+        ''', (restaurant_name,))
+
+        old_restaurant_rat = cur.fetchone()
+        # print(old_restaurant_rat[0])
+        new_restaurant_rat = (float(old_restaurant_rat[0])*int(item_orders) + float(item_rating)) / (int(item_orders) + 1)
+
+        cur.execute('''
+            UPDATE Restaurant
+            SET review = %s
+            WHERE restaurant_name = %s
+        ''', (new_restaurant_review, restaurant_name))
+
+        mysql.connection.commit()
+
+        # Update the food_item table with the submitted item rating
+        cur.execute('''
+            UPDATE Food_Item
+            SET item_rating = %s
+            WHERE item_name = %s
+        ''', (new_item_rating, item_name))
+        
+        mysql.connection.commit()
+
+        cur.execute('''
+            UPDATE Restaurant
+            SET rating = %s
+            WHERE restaurant_name = %s
+        ''', (new_restaurant_rat, restaurant_name))
+        
+        mysql.connection.commit()
+        
+        cur.close()
+
+    # Render the review submission template and pass restaurant_id to the template
+    return render_template("/customers/review_submission.html") 
 
 @app.route('/restaurant')
 @login_rest
@@ -634,7 +712,7 @@ def userdetails():
             food_item = [dict(zip(food_item_columns, row)) for row in food_item_data]
             food_items.append({'order_id': order_id, 'food_item': food_item[0]})
     
-        print(orders)
+        # print(orders)
     contact_details = json.loads(user[0]['contact_details'])
     return render_template("/customers/userdetails.html", user=user, address=address, orders=orders, food_items=food_items, phone = contact_details.get('phone'), email = contact_details.get('email'))
 

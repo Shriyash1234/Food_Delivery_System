@@ -1,6 +1,7 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8"</header> 
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Foodie's Delight: Cuisine Options</title>
     <link
@@ -11,6 +12,7 @@
       body {
         background-color: #f5f5f5;
         font-family: "Open Sans", sans-serif;
+        /* padding-bottom: 60px; Add bottom padding for footer */
       }
       .cuisine-card {
         background-color: #fff;
@@ -23,42 +25,38 @@
       }
       .cuisine-image {
         width: 100%;
-        height: 150px; /* Adjust height if needed */
-        /* Choose one of the options below: */
-        /* Option 1: Use object-fit: contain */
-        object-fit: contain;
-        /* Option 2: Adjust image dimensions beforehand */
-        /* ... */
+        height: 150px;
+        object-fit: cover;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
       }
       .cuisine-name {
         padding: 1rem;
         text-align: center;
         font-weight: bold;
       }
-      /* Updated style for header */
       header {
         background-color: #4f46e5;
         color: white;
-        padding: 1rem;
+        padding: 2rem;
         text-align: center;
-        /* Adjust width if needed */
-        /* width: ... */
+        /* Remove fixed positioning */
       }
       .header-text {
-        font-size: 1.5rem; /* Adjust font size */
+        font-size: 1.5rem;
+        margin-right: 70px; /* Adjust margin to prevent overlap */
+        display: block; /* Ensure it's a block element */
       }
-      /* Added style for user profile button */
       .user-profile-button {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
         background-color: #46e559;
         color: white;
         padding: 0.5rem 1rem;
         border-radius: 5px;
         cursor: pointer;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
       }
-      /* Added style for signout button */
       .signout-button {
         background-color: #ff0000;
         color: white;
@@ -69,43 +67,95 @@
         top: 1rem;
         left: 1rem;
       }
+      footer {
+        background-color: #4f46e5;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+        /* Remove fixed positioning */
+      }
+      footer p {
+        margin-bottom: 0.5rem; /* Added margin for better spacing */
+      }
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        list-style-type: none;
+        padding: 0;
+        margin: 0; /* Remove default margin */
+      }
+      .footer-links li {
+        margin: 0 0.5rem; /* Adjusted margin for better spacing */
+      }
+      .footer-links li a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+      .footer-links li a:hover {
+        color: #f2f2f2; /* Darken color on hover */
+      }
+
+      /* Media query to hide header text on mobile */
+      @media (max-width: 640px) {
+        .header-text {
+          display: none;
+        }
+      }
     </style>
   </head>
   <body>
     <header class="flex justify-center items-center">
       <h1 class="header-text text-white font-bold">Foodie's Delight</h1>
-      <a href="{{ url_for('userdetails') }}" class="user-profile-button">User Profile</a>
-      <a href="{{ url_for('signout') }}" class="signout-button">Sign Out</a>
+      <a href="{{ url_for('userdetails') }}" class="user-profile-button"
+        >User Profile</a
+      >
+      <!-- <a href="{{ url_for('signout') }}" class="signout-button">Sign Out</a> -->
+      <button onclick="goBack()" class="signout-button">Sign Out</button>
     </header>
-    <h2 class="text-3xl font-bold text-center my-4">
-      Explore Cuisines From Around India
-    </h2>
-    <ul class="grid grid-cols-1 md:grid-cols-3 gap-4 px-4">
-      {% for cuisine in cuisines %}
-      <li class="cuisine-card hover:bg-gray-100">
-        <a
-          href="{{ url_for('restaurants_by_cuisine', cuisine_type=cuisine.cuisine_type) }}"
-          class="flex flex-col items-center justify-center"
-        >
-          <img
-            src="{{ url_for('static', filename='Assets/cuisines/' + cuisine.cuisine_type + '.jpg') }}"
-            class="cuisine-image"
-            alt="cuisine_img"
-          />
-          <p class="cuisine-name text-lg">{{ cuisine.cuisine_type }}</p>
-        </a>
+    <div class="mt-16">
+      <h2 class="text-3xl font-bold text-center my-4">
+        Explore Cuisines From Around India
+      </h2>
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4"
+      >
+        {% for cuisine in cuisines %}
+        <div class="cuisine-card hover:bg-gray-100">
+          <a
+            href="{{ url_for('restaurants_by_cuisine', cuisine_type=cuisine.cuisine_type) }}"
+            class="flex flex-col items-center justify-center"
+          >
+            <img
+              src="{{ url_for('static', filename='Assets/cuisines/' + cuisine.cuisine_type + '.jpg') }}"
+              class="cuisine-image"
+              alt="cuisine_img"
+            />
+            <p class="cuisine-name text-lg">{{ cuisine.cuisine_type }}</p>
+          </a>
+        </div>
         {% endfor %}
-      </li>
-    </ul>
-    <footer class="bg-gray-900 text-white py-4">
-      <div class="container mx-auto flex justify-between items-center">
-        <p>&copy; 2022 Foodie's Delight. All rights reserved.</p>
-        <ul class="flex space-x-4">
-            <li style="margin-right: auto;"><a href="{{ url_for('aboutus') }}">About Us </a></li>
-          <!-- <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Privacy Policy</a></li> -->
-        </ul>
       </div>
+    </div>
+    <footer>
+      <p>
+        &copy; <span id="currentYear"></span> Foodie's Delight. All rights
+        reserved.
+      </p>
+      <ul class="footer-links">
+        <li><a href="{{ url_for('aboutus') }}">About Us</a></li>
+        <!-- <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Privacy Policy</a></li> -->
+      </ul>
     </footer>
+    <script>
+      function goBack() {
+        window.location.href = "/";
+      }
+
+      // Set current year dynamically
+      document.getElementById("currentYear").textContent =
+        new Date().getFullYear();
+    </script>
   </body>
 </html>

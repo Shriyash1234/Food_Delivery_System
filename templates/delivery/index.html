@@ -1,67 +1,82 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Order details</title>
     <link rel="stylesheet" href="../static/CSS/userdetails.css" />
-</head>
-<body>
-    <a href="http://127.0.0.1:5000" class="btn-back">Log Out</a>
+  </head>
+  <body>
+    <!-- <a href="http://127.0.0.1:5000" class="btn-back">Log Out</a> -->
+    <button onclick="goBack()" class="btn-back">Log Out</button>
     <h1>User Details</h1>
     <table>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Vehichle Number</th>
-            <th>License ID</th>
-            <th>Phone Number</th>
-            <th>Email</th>
-            <th>Location</th>
-            <th>Availability</th>
-        </tr>
-        <tr>
-            <td>{{ agent.agent_id }}</td>
-            <td>{{ agent.agent_name }}</td>
-            <td>{{ agent.vehicle_number }}</td>
-            <td>{{ agent.license_id }}</td>
-            <td>{{ agent.phone_num }}</td>
-            <td>{{ agent.email }}</td>
-            <td>{{ agent.location }}</td>
-            <td>{{ agent.availability }}</td>
-        </tr>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Vehichle Number</th>
+        <th>License ID</th>
+        <th>Phone Number</th>
+        <th>Email</th>
+        <th>Location</th>
+        <th>Availability</th>
+      </tr>
+      <tr>
+        <td>{{ agent.agent_id }}</td>
+        <td>{{ agent.agent_name }}</td>
+        <td>{{ agent.vehicle_number }}</td>
+        <td>{{ agent.license_id }}</td>
+        <td>{{ agent.phone_num }}</td>
+        <td>{{ agent.email }}</td>
+        <td>{{ agent.location }}</td>
+        <td>{{ agent.availability }}</td>
+      </tr>
     </table>
     <h1>Orders</h1>
     <table>
-        <tr>
-            <th>Order ID</th>
-            <th>Restaurant Address</th>
-            <th>Customer Address</th>
-            <th>Delivery Charges</th>
-            <th>Pickup Time</th>
-            <th>Delivery/ETA Time</th>
-            <th>Status</th>
-            <th>Rating</th>
-            <th>Review</th>
-        </tr>
-        {% for delivery in delivery %}
-        <tr>
-            <td>{{ delivery.order_id }}</td>
-            <td>{{ delivery.restaurant_address.building_name }}, {{ delivery.restaurant_address.street }}, {{ delivery.restaurant_address.city }}, {{ delivery.restaurant_address.state }} - {{ delivery.restaurant_address.pin_code }}</td>
-            <td>{{ delivery.customer_address.building_name }}, {{ delivery.customer_address.street }}, {{ delivery.customer_address.city }}, {{ delivery.customer_address.state }} - {{ delivery.customer_address.pin_code }}</td>
-            <td>{{ delivery.delivery_charges }}</td>
-            <td>{{ delivery.pickup_time }}</td>
-            <td>{{ delivery.delivery_time }}</td>
-            <td>{{ delivery.delivery_status }}</td>
-            {% if delivery.delivery_status == "On the way" %}
-                <td>NA</td>
-            {% else %}
-                <td>{{ delivery.delivery_rating }}</td>
-            {% endif %}
-            <td>{{ delivery.delivery_review }}</td>
-
-        </tr>
-        {% endfor %}
+      <tr>
+        <th>Order ID</th>
+        <th>Restaurant Address</th>
+        <th>Customer Address</th>
+        <th>Delivery Charges</th>
+        <th>Pickup Time</th>
+        <th>Delivery/ETA Time</th>
+        <th>Status</th>
+        <th>Rating</th>
+        <th>Review</th>
+      </tr>
+      {% for delivery in delivery %}
+      <tr>
+        <td>{{ delivery.order_id }}</td>
+        <td>
+          {{ delivery.restaurant_address.building_name }}, {{
+          delivery.restaurant_address.street }}, {{
+          delivery.restaurant_address.city }}, {{
+          delivery.restaurant_address.state }} - {{
+          delivery.restaurant_address.pin_code }}
+        </td>
+        <td>
+          {{ delivery.customer_address.building_name }}, {{
+          delivery.customer_address.street }}, {{ delivery.customer_address.city
+          }}, {{ delivery.customer_address.state }} - {{
+          delivery.customer_address.pin_code }}
+        </td>
+        <td>{{ delivery.delivery_charges }}</td>
+        <td>{{ delivery.pickup_time }}</td>
+        <td>{{ delivery.delivery_time }}</td>
+        <td>{{ delivery.delivery_status }}</td>
+        {% if delivery.delivery_status == "On the way" %}
+        <td>NA</td>
+        {% else %}
+        <td>{{ delivery.delivery_rating }}</td>
+        {% endif %}
+        <td>{{ delivery.delivery_review }}</td>
+      </tr>
+      {% endfor %}
     </table>
 
-    
-</body>
+    <script>
+      function goBack() {
+        window.location.href = "/";
+      }
+    </script>
+  </body>
 </html>
